@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Movie Watchlist</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/css/all.css">
+	<link rel="stylesheet" href="assets/css/reset.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+	<!-- TODO: add a nav bar. -->
+	<div class="body-wrapper">
+		<header>
+			<div class="header-text-wrapper">
+				<h1>Find your film</h1>
+			</div>
+		</header>
+
+		<form>
+			<div class="search-wrapper">
+				<input type="search" id="search-bar" placeholder="enter a title, actor, or genre"></input>
+				<button id="submit-btn" type="submit">
+					<i class="fa-solid fa-magnifying-glass"></i>
+				</button>
+			</div>
+		</form>
+		<main>
+			<div id="movie-cards-wrapper" class="space-saver"></div>
+		</main>
+	</div>
+
+	<script src="index.js"></script>
+</body>
