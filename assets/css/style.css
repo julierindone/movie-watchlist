@@ -1,10 +1,12 @@
 :root {
   --white: #f8f8f8;
   --gray: hsl(0, 0%, 12%);
+  --medium-gray: hsl(0, 0%, 14%);
   --light-gray: hsl(0, 0%, 52%);
   --black: #151515;
   --ice-blue: hsl(182 32% 43% / 1);
   --transp-ice-blue: hsl(187, 28%, 49%, 65%);
+  --yellow: hsl(52, 100%, 50%);
   --black-text-shadow: 3px 3px 1px var(--black), 1.15px -1.15px 1px var(--black), -1.15px 1.15px 1px var(--black), -1.15px -1.15px 1px var(--black);
   --gray-border: solid .5px #797979;
   --ice-blue-border: 2px solid var(--ice-blue);
@@ -36,7 +38,7 @@ p {
 
 header {
   background: url("../images/vista_lapl_coll.jpg") no-repeat top / cover;
-  flex: 1 1 7.25rem;
+  flex: 1 1 11.4rem;
 
   > .header-text-wrapper {
     display: flex;
@@ -45,32 +47,35 @@ header {
     align-content: center;
     backdrop-filter: contrast(.65) blur(1px) brightness(.34);
     height: 100%;
-    border-bottom: 1px var(--ice-blue) solid;
-    padding-block: 0.5rem 0.6em;
+    border-bottom: 1px var(--transp-ice-blue) solid;
+    padding-block: 0.6rem 0.9em;
     padding-inline: 0.8em;
 
     h1 {
-      flex: 1 1;
+      flex: 6 1;
+      align-content: center;
       font-family: "Limelight", sans-serif;
-      font-size: clamp(1.9rem, 0.25rem + 8.3vw, 5.3rem);
-      text-shadow: var(--black-text-shadow);
-      text-transform: uppercase;
+      font-size: clamp(2rem, 0.6rem + 11vw, 5.3rem);
       text-align: center;
-      align-content: end;
+      text-transform: uppercase;
+      text-shadow: var(--black-text-shadow);
+      letter-spacing: 0.015em;
+      word-spacing: .06em;
+      opacity: 0.85;
+      padding-top: 0.4rem;
     }
   }
 }
 
 form {
   display: flex;
-  flex: 1 1;
-  gap: 0.5em;
+  flex: 3 1;
+  gap: 0.55em;
   flex-flow: column wrap;
   font-family: 'Open Sans', sans-serif;
   padding-inline: 5vw;
   width: 100%;
   justify-content: flex-end;
-
 }
 
 #search-bar-wrapper {
@@ -81,6 +86,7 @@ form {
   padding-inline: 1rem;
   padding-block: .09em;
   justify-content: space-between;
+  opacity: .85;
 
   &.fancy-focus {
     border: 1.5px solid var(--ice-blue);
@@ -118,14 +124,14 @@ form {
 
 #search-types {
   display: flex;
-  gap: .3rem 0.7rem;
+  gap: .4rem 0.8rem;
   flex-wrap: wrap;
   align-items: center;
 
   > .type-choice {
     display: flex;
     flex-wrap: nowrap;
-    gap: 0.3em;
+    gap: 0.25em;
   }
 
   & label {
@@ -146,13 +152,13 @@ main {
 #movie-cards-wrapper {
   background-color: var(--black);
   flex: 1 1;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
   padding-top: .5em;
 
   &.space-saver {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
     color: var(--light-gray);
     width: 90vw;
     text-align: center;
@@ -170,20 +176,23 @@ main {
     margin-inline: 0;
     padding-inline: 3.8vw;
     text-align: left;
+
+    hr:last-of-type {
+      display: none;
+    }
+
+    hr.card-divider {
+      height: 0.5px;
+      border-color: var(--white);
+      border-inline: none;
+      border-bottom: none;
+      opacity: 50%;
+      width: 80%;
+    }
   }
 }
 
-.card-divider {
-  height: 0.5px;
-  border-color: var(--white);
-  border-inline: none;
-  border-bottom: none;
-  opacity: 50%;
-  width: 80%;
-}
-
 article.movie-card {
-  flex: 1 1;
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
@@ -195,58 +204,61 @@ article.movie-card {
     flex: 1 1;
     display: flex;
     flex-direction: column;
-    gap: 0.2em;
+    gap: 0.4em;
     font-size: clamp(0.85rem, 0.78rem + 0.5vw, 1.1rem);
 
-    > .title-rating,
-    .runtime-year-list,
-    .genre {
-      flex: 1 1;
+    .title-watchlist {
       display: flex;
-      gap: 0.5em;
-    }
-
-    > .title-rating {
-      flex: 2 1;
       justify-content: space-between;
-      align-items: baseline;
-      text-wrap: nowrap;
+      gap: 0.75em;
 
-      > h2 {
+      h2 {
         font-size: 1.3em;
         font-weight: 500;
         text-wrap: wrap;
       }
+    }
+  }
 
-      > p {
-        text-wrap: nowrap;
-        font-size: 0.95em;
+  .runtime-year-genre-rating {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+
+    > .runtime-year-genre {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1;
+      gap: 0.1em;
+    }
+
+    > .rating {
+      align-self: center;
+      font-size: 1.2em;
+      font-weight: 400;
+    }
+  }
+
+  > .plot {
+    flex: 4 1;
+    margin-top: 0.5em;
+    font-size: 0.935em;
+  }
+}
+
+&.fuzzy-results {
+
+  gap: 1.05em;
+
+  & div.movie-details {
+    gap: 0.1em;
+
+    details#more {
+      margin-top: 0.3rem;
+
+      p {
+        margin-left: 1.2em
       }
-    }
-
-    > .runtime-year-list,
-    .genre {
-      font-size: 0.9em;
-    }
-
-    > .runtime-year-list {
-      justify-content: space-between;
-
-      > div {
-        display: flex;
-        gap: 1em;
-
-        .watchlist {
-          font-size: 1em;
-          font-weight: 700;
-        }
-      }
-    }
-
-    > .plot {
-      flex: 4 1;
-      margin-top: 0.4em;
-      font-size: 0.935em;
     }
   }
 }
@@ -255,29 +267,37 @@ article.movie-card {
 		ICONS & IMAGES
 	============================== */
 
+.thumbnail {
+  width: max(90px, 14%);
+  object-fit: contain;
+  margin-top: 0.3rem;
+  background: var(--medium-gray);
+}
+
 .fa-film {
   font-size: 2.5em !important;
   margin-top: 1rem;
 }
 
-.fa-star {
-  font-size: .85em;
-  margin-right: 0.65em;
-  color: hsl(52, 100%, 50%);
+.fa-circle-plus,
+.fa-circle-check {
+  font-size: 1.5em;
+  padding-top: 0.25em;
 }
 
-.fa-circle-plus {
-  font-size: 1.05em;
+.fa-circle-check {
+  color: var(--ice-blue);
+  transform: scale(1.25);
+}
+
+.fa-star {
+  font-size: .85em;
+  margin-right: 0.62em;
+  color: var(--yellow);
 }
 
 .fa-magnifying-glass {
   color: inherit;
-}
-
-.thumbnail {
-  width: max(90px, 14%);
-  object-fit: contain;
-  padding-top: 0.3rem;
 }
 
 /* =============================
@@ -324,7 +344,7 @@ article.movie-card {
     padding-inline: 5vw;
   }
 
-  #movie-cards-wrapper .card-divider {
+  hr.card-divider {
     width: 40%;
   }
 

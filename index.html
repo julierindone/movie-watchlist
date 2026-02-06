@@ -17,7 +17,7 @@
 	<div class="body-wrapper">
 		<header>
 			<div class="header-text-wrapper">
-				<h1>Find your film</h1>
+				<h1>FIND A FILM</h1>
 				<form id="search-form">
 					<div id="search-bar-wrapper">
 						<input type="search" id="search-bar" name="title" placeholder="enter a title" required></input>
@@ -27,18 +27,17 @@
 					</div>
 					<div id="search-types">
 						<div class="type-choice">
-							<input type="radio" name="search-type" id="exact-search" checked />
+							<input type="radio" name="type" id="exact-search" data-letter="t" checked />
 							<label for="exact-search">Exact Search</label>
 						</div>
 						<div class="type-choice">
-							<input type="radio" name="search-type" id="fuzzy-search" />
+							<input type="radio" name="type" id="fuzzy-search" data-letter="s" />
 							<label for="fuzzy-search">Fuzzy Search</label>
 						</div>
 					</div>
 				</form>
 			</div>
 		</header>
-
 		<main>
 			<div id="movie-cards-wrapper" class="space-saver">
 				<p id="no-result-message">enter a movie title to begin!</p>
