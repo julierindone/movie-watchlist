@@ -54,6 +54,8 @@
   }
 }
 
+/* convert to grid using media objects guidelines
+     https://developer.mozilla.org/en-US/docs/Web/CSS/How_to/Layout_cookbook/Media_objects */
 article.movie-card {
   display: flex;
   flex-wrap: wrap;
@@ -107,10 +109,8 @@ article.movie-card.fuzzy-results {
   > div.movie-details {
 
     > .year {
-      /* margin-top: 0.1em; */
       font-size: 1rem;
       line-height: 0.7;
-      color: pink !important;
     }
 
     > details#more {
@@ -119,9 +119,11 @@ article.movie-card.fuzzy-results {
       > summary {
         list-style: none;
         font-size: 0.85em;
-        font-weight: 300;
         color: hsl(187deg 36.15% 70.66%);
-        font-style: italic;
+        &:hover {
+          font-style: italic;
+          font-size: 0.95em;
+        }
       }
 
       > div {
@@ -182,7 +184,7 @@ article.movie-card.fuzzy-results {
   }
 
   article.movie-card {
-    gap: 1.7em;
+    gap: 1.3em;
   }
 
   div.movie-details {

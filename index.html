@@ -3,18 +3,26 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Movie Watchlist</title>
+	<title>Find a Film</title>
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="assets/css/all.css">
 	<link rel="stylesheet" href="assets/css/reset.css">
 	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/cards.css">
 </head>
 
 <body>
-	<!-- TODO: add a nav bar. -->
 	<div class="body-wrapper">
+		<nav id="nav-bar">
+			<p>
+				find
+			</p>
+			<p>
+				list
+			</p>
+		</nav>
 		<header>
 			<div class="header-text-wrapper">
 				<h1>FIND A FILM</h1>
@@ -26,13 +34,14 @@
 						</button>
 					</div>
 					<div id="search-types">
+						<p>Search type:</p>
 						<div class="type-choice">
 							<input type="radio" name="type" id="exact-search" data-letter="t" checked />
-							<label for="exact-search">Exact Search</label>
+							<label for="exact-search">Exact</label>
 						</div>
 						<div class="type-choice">
 							<input type="radio" name="type" id="fuzzy-search" data-letter="s" />
-							<label for="fuzzy-search">Fuzzy Search</label>
+							<label for="fuzzy-search">Fuzzy</label>
 						</div>
 					</div>
 				</form>

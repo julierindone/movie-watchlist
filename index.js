@@ -1,95 +1,107 @@
-const movieCardsWrapper = document.getElementById('movie-cards-wrapper')
-const searchForm = document.getElementById('search-form')
-const searchBarWrapper = document.getElementById('search-bar-wrapper')
-const noResultMessage = document.getElementById('no-result-message')
-const searchBar = document.getElementById('search-bar')
-let resultArray = []
-let allMovieCards = ``
+const movieCardsWrapper = document.getElementById('movie-cards-wrapper');
+const searchForm = document.getElementById('search-form');
+const searchBarWrapper = document.getElementById('search-bar-wrapper');
+const noResultMessage = document.getElementById('no-result-message');
+const searchBar = document.getElementById('search-bar');
+let resultArray = [];
+let watchlistArray = [];
+let allMovieCards = ``;
 
-searchBar.addEventListener('click', () => {
-  searchBarWrapper.classList.toggle('fancy-focus')
-})
+document.addEventListener('click', (event) => {
+  if (event.target.id === 'search-bar') {
+    searchBarWrapper.classList.toggle('fancy-focus');
+  }
+  else if (event.target.dataset.imdbId) {
+    handleWatchlistIconClick(event.target.dataset.imdbId);
+  }
+  else {
+    // console.log('')
+  }
+});
 
 searchBar.addEventListener('blur', () => {
-  searchBarWrapper.classList.remove('fancy-focus')
-})
+  searchBarWrapper.classList.remove('fancy-focus');
+});
 
 searchForm.addEventListener('submit', async (e) => {
-  e.preventDefault()
+  e.preventDefault();
 
-  // TODO: Might be better to use a different method to get this ONE field.
-  const key = 'aad30e17'
-  const searchData = Object.fromEntries(new FormData(searchForm))
-  const titleToSearch = (searchData.title).replaceAll(' ', '+')
-  let typeOfSearch = ''
-  const typeNames = document.getElementsByName('type')
+  const key = 'aad30e17';
+  const titleToSearch = (searchBar.value).replaceAll(' ', '+');
+  let typeOfSearch = '';
+  const typeNames = document.getElementsByName('type');
   for (let type of typeNames) {
     if (type.checked) {
-      typeOfSearch = type.dataset.letter
-      break
+      typeOfSearch = type.dataset.letter;
+      break;
     }
   }
 
-  const response = await fetch(`https://omdbapi.com/?${typeOfSearch}=${titleToSearch}&apikey=${key}`)
-  const data = await response.json()
+  const response = await fetch(`https://omdbapi.com/?${typeOfSearch}=${titleToSearch}&apikey=${key}`);
+  const data = await response.json();
 
   if (data.Response !== "True") {
-    let message = `I couldn't find that title. Check your spelling and try again.`
-    resetAll(message)
+    let message = `I couldn't find that title. Check your spelling and try again.`;
+    resetAll(message);
   }
 
   else {
-    resetAll()
+    resetAll();
 
     if (typeOfSearch === 't') {
-      let exactResult = getExactResult(data)
-      generateExactResultHtml(exactResult)
+      getExactResult(data);
+      generateExactResultHtml(resultArray);
     }
     else {
-      getFuzzyResults(data)
-      generateFuzzyResultsHtml(resultArray)
+      getFuzzyResults(data);
+      generateFuzzyResultsHtml(resultArray);
     }
   }
-})
+});
 
-function getExactResult(data) {
-  let thumbnail = getThumbnail(data)
-  let rating = data.Ratings[1] ? data.Ratings[1].Value : "???"
+function getExactResult (data) {
+  let thumbnail = getThumbnail(data);
+  let rating = data.Ratings[1] ? data.Ratings[1].Value : "???";
 
-  return {
-    title: `${data.Title}`,
-    rating: `${rating}`,
-    runtime: `${data.Runtime}`,
-    year: `${data.Year}`,
-    genre: `${data.Genre}`,
+  // TODO: Take off backticks.
+  const movie = {
+    title: data.Title,
+    imdbId: data.imdbId,
+    rating: rating,
+    runtime: data.Runtime,
+    year: data.Year,
+    genre: data.Genre,
     watchlist: false,
-    plot: `${data.Plot}`,
-    thumbnail: `${thumbnail}`,
+    plot: data.Plot,
+    thumbnail: thumbnail,
     alt: `poster for ${data.Title}`
-  }
+  };
+  resultArray.push(movie);
 }
 
 // TODO: Limit to 10 entries and add "load more movies" button at bottom
-function getFuzzyResults(data) {
+function getFuzzyResults (data) {
   data.Search.forEach(currentMovie => {
     if (!(currentMovie.Title.toLowerCase().includes("commentary"))) {
-      let thumbnail = getThumbnail(currentMovie)
+      let thumbnail = getThumbnail(currentMovie);
 
       const movie = {
-        title: `${currentMovie.Title}`,
-        year: `${currentMovie.Year}`,
+        title: currentMovie.Title,
+        imdbId: currentMovie.imdbId,
+        year: currentMovie.Year,
         watchlist: false,
-        thumbnail: `${thumbnail}`,
+        thumbnail: thumbnail,
         alt: `poster for ${currentMovie.Title}`
-      }
-
-      resultArray.push(movie)
+      };
+      resultArray.push(movie);
     }
   });
 }
 
-function generateExactResultHtml(exactResult) {
-  let movie = exactResult
+function generateExactResultHtml (resultArray) {
+  // TODO: I had to update this to use resultArray and haven't tested it out yet!
+
+  let movie = resultArray[0];
 
   // NOTE: p.watchlist class prob doesn't need to exist but I don't feel confident in changing it right now
   movieCardsWrapper.innerHTML = `
@@ -98,7 +110,7 @@ function generateExactResultHtml(exactResult) {
       <div class="movie-details">
         <div class="title-watchlist">
           <h2>${movie.title}</h2>
-          <p class="watchlist"><i class="fa-solid fa-circle-plus"></i></p>
+			    <i class="fa-solid fa-circle-plus" data-imdb-id="${movie.imdbId}"></i>
         </div>
         <div class="runtime-year-genre-rating">
           <div class="runtime-year-genre">
@@ -115,10 +127,10 @@ function generateExactResultHtml(exactResult) {
     </article>
     <hr class="card-divider">`
 
-  movieCardsWrapper.classList.replace('space-saver', 'cards')
+  movieCardsWrapper.classList.replace('space-saver', 'cards');
 }
 
-function generateFuzzyResultsHtml(resultArray) {
+function generateFuzzyResultsHtml (resultArray) {
 
   resultArray.forEach(movie => {
     allMovieCards +=
@@ -127,44 +139,84 @@ function generateFuzzyResultsHtml(resultArray) {
         <div class="movie-details">
           <div class="title-watchlist">
             <h2>${movie.title}</h2>
-            <p class="watchlist"><i class="fa-solid fa-circle-plus"></i></p>
+            <p class="watchlist"><i class="fa-solid fa-circle-plus" data-imdb-id="${movie.imdbId}"></i></p>
           </div>
-          <p>${movie.year}</p>
+          <p class="year">${movie.year}</p>
           <details id="more">
             <summary>more</summary>
+            <div>
             <p>The other details will go here.</p>
+            </div>
           </details>
         </div>
       </article>
-      <hr class="card-divider">`
-  })
+      <hr class="card-divider">`;
+  });
 
-  movieCardsWrapper.classList.replace('space-saver', 'cards')
-  movieCardsWrapper.innerHTML = allMovieCards
+  movieCardsWrapper.classList.replace('space-saver', 'cards');
+  movieCardsWrapper.innerHTML = allMovieCards;
 }
 
-function getThumbnail(data) {
+function getThumbnail (data) {
   if ((data.Poster.toLowerCase() === "n/a") || (!data.Poster)) {
-    return "assets/images/film_icon.png"
+    return "assets/images/film_icon.png";
   }
   else {
-    return data.Poster
+    return data.Poster;
   }
 }
 
-function getDetails() {
-  // TODO: Onclick of details, fetch data from the exact match version of the movie selected.
+function handleWatchlistIconClick (chosenImdbId) {
+  // identify chosen movie in resultArray to get its watchlist status
+  let chosenMovie = resultArray.filter(movie => {
+    return movie.imdbId === chosenImdbId;
+  })[0];
+
+  // check chosenMovie.watchlist status to know if it's already on the watchjlist.
+  // if it is, remove it.
+  if (chosenMovie.watchlist) {
+
+    // find the index of the movie in the watchlist
+    for (let i = 0; i < watchlistArray.length; i++) {
+      let movie = watchlistArray[i];
+
+      //  when it finds the match, update watchlist status in movie object
+      if (movie.imdbId === chosenImdbId) {
+        chosenMovie.watchlist = false;
+
+        // remove movie from watchlist
+        watchlistArray.splice(i, 1);
+
+        // update icon to plus
+        document.querySelector(`[data-imdb-id="${chosenMovie.imdbId}"]`).classList.replace('fa-circle-check', 'fa-circle-plus');
+      }
+    }
+  }
+
+  // the movie needs to be added to watchlist
+  else {
+    // update watchlist value
+    chosenMovie.watchlist = true;
+
+    // add movie to array
+    watchlistArray.push(chosenMovie);
+
+    // update icon to show checkmark
+    document.querySelector(`[data-imdb-id="${chosenMovie.imdbId}"]`).classList.replace('fa-circle-plus', 'fa-circle-check');
+  }
 }
 
-function resetAll(message = null) {
-  movieCardsWrapper.innerHTML = ''
-  resultArray = []
-  allMovieCards = ''
-  movieCardsWrapper.classList.replace('cards', 'space-saver')
+function resetAll (message = null) {
+  movieCardsWrapper.innerHTML = '';
+  resultArray = [];
+  allMovieCards = '';
+  movieCardsWrapper.classList.replace('cards', 'space-saver');
   if (message === null) {
-    message = ''
+    message = '';
   }
   movieCardsWrapper.innerHTML = `
   			<p id="no-result-message">${message}</p>
-				<i class="fa-solid fa-film"></i>`
+				<i class="fa-solid fa-film"></i>`;
+}
+  // TODO: Onclick of details, fetch data from the exact match version of the movie selected so it can be opened in the expansion.
 }
