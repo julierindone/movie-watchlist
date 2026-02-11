@@ -1,11 +1,20 @@
-const movieCardsWrapper = document.getElementById('movie-cards-wrapper');
+// // SHARED VARIABLES // //
 const searchForm = document.getElementById('search-form');
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
 const noResultMessage = document.getElementById('no-result-message');
 const searchBar = document.getElementById('search-bar');
+
+// // FIND-FILM VARIABLES // //
+const movieCardsWrapper = document.getElementById('movie-cards-wrapper');
+
+// // WATCHLIST VARIABLES // //
+
 let resultArray = [];
 let watchlistArray = [];
-let allMovieCards = ``;
+
+console.log(JSON.parse(localStorage.getItem("watchlist")))
+
+// // SHARED LISTENERS // //
 
 document.addEventListener('click', (event) => {
   if (event.target.id === 'search-bar') {
@@ -22,6 +31,9 @@ document.addEventListener('click', (event) => {
 searchBar.addEventListener('blur', () => {
   searchBarWrapper.classList.remove('fancy-focus');
 });
+
+// TODO: Add listener to handle missing images
+// https://dillionmegida.com/p/default-image-src/
 
 searchForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -66,7 +78,7 @@ function getExactResult (data) {
   // TODO: Take off backticks.
   const movie = {
     title: data.Title,
-    imdbId: data.imdbId,
+    imdbId: data.imdbID,
     rating: rating,
     runtime: data.Runtime,
     year: data.Year,
@@ -76,6 +88,7 @@ function getExactResult (data) {
     thumbnail: thumbnail,
     alt: `poster for ${data.Title}`
   };
+
   resultArray.push(movie);
 }
 
@@ -87,7 +100,7 @@ function getFuzzyResults (data) {
 
       const movie = {
         title: currentMovie.Title,
-        imdbId: currentMovie.imdbId,
+        imdbId: currentMovie.imdbID,
         year: currentMovie.Year,
         watchlist: false,
         thumbnail: thumbnail,
@@ -105,8 +118,8 @@ function generateExactResultHtml (resultArray) {
 
   // NOTE: p.watchlist class prob doesn't need to exist but I don't feel confident in changing it right now
   movieCardsWrapper.innerHTML = `
-    <article class="movie-card">
-      <img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
+  <article class="movie-card">
+    <img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
       <div class="movie-details">
         <div class="title-watchlist">
           <h2>${movie.title}</h2>
@@ -114,7 +127,7 @@ function generateExactResultHtml (resultArray) {
         </div>
         <div class="runtime-year-genre-rating">
           <div class="runtime-year-genre">
-            <p class="runtime-year">${movie.year}&ensp;${movie.runtime}</p>
+            <p>${movie.year}&ensp;${movie.runtime}</p>
             <p class="genre">${movie.genre}</p>
           </div>
           <p class="rating">
@@ -125,13 +138,14 @@ function generateExactResultHtml (resultArray) {
         <p class="plot">${movie.plot}</p>
       </div>
     </article>
-    <hr class="card-divider">`
+    <hr class="card-divider">`;
 
   movieCardsWrapper.classList.replace('space-saver', 'cards');
 }
 
 function generateFuzzyResultsHtml (resultArray) {
 
+  let allMovieCards = '';
   resultArray.forEach(movie => {
     allMovieCards +=
       `<article class="movie-card fuzzy-results">
@@ -139,13 +153,13 @@ function generateFuzzyResultsHtml (resultArray) {
         <div class="movie-details">
           <div class="title-watchlist">
             <h2>${movie.title}</h2>
-            <p class="watchlist"><i class="fa-solid fa-circle-plus" data-imdb-id="${movie.imdbId}"></i></p>
+            <i class="fa-solid fa-circle-plus" data-imdb-id="${movie.imdbId}"></i>
           </div>
           <p class="year">${movie.year}</p>
           <details id="more">
             <summary>more</summary>
             <div>
-            <p>The other details will go here.</p>
+              <p>The other details will go here.</p>
             </div>
           </details>
         </div>
@@ -198,8 +212,9 @@ function handleWatchlistIconClick (chosenImdbId) {
     // update watchlist value
     chosenMovie.watchlist = true;
 
-    // add movie to array
+    // add movie to array and push updated array to localStorage
     watchlistArray.push(chosenMovie);
+    localStorage.setItem("watchlist", JSON.stringify(watchlistArray))
 
     // update icon to show checkmark
     document.querySelector(`[data-imdb-id="${chosenMovie.imdbId}"]`).classList.replace('fa-circle-plus', 'fa-circle-check');
@@ -209,7 +224,6 @@ function handleWatchlistIconClick (chosenImdbId) {
 function resetAll (message = null) {
   movieCardsWrapper.innerHTML = '';
   resultArray = [];
-  allMovieCards = '';
   movieCardsWrapper.classList.replace('cards', 'space-saver');
   if (message === null) {
     message = '';
@@ -218,5 +232,7 @@ function resetAll (message = null) {
   			<p id="no-result-message">${message}</p>
 				<i class="fa-solid fa-film"></i>`;
 }
+
+function getDetails () {
   // TODO: Onclick of details, fetch data from the exact match version of the movie selected so it can be opened in the expansion.
 }
