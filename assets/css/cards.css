@@ -4,14 +4,7 @@
 ================================
 ============================== */
 
-/* main {
-  flex: 2 1 60vh;
-  display: flex;
-  max-width: 1000px;
-  margin-inline: auto;
-} */
-
-#movie-cards-wrapper {
+.cards-wrapper {
   background-color: var(--black);
   flex: 1 1;
   padding-top: .5em;

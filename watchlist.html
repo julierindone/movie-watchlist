@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Movie Watchlist</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Limelight&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="assets/css/all.css">
+	<link rel="stylesheet" href="assets/css/reset.css">
+	<link rel="stylesheet" href="assets/css/style.css">
+	<link rel="stylesheet" href="assets/css/cards.css">
+</head>
+
+<!-- TODO: Move the actual HTML to be generated within the index.html page -->
+
+<body>
+	<div class="body-wrapper">
+		<nav class="nav-bar">
+			<div class="nav-wrapper">
+				<a href="index.html">
+					find
+				</a>
+				<a href="watchlist.html">
+					list
+				</a>
+			</div>
+		</nav>
+		<header>
+			<div class="header-text-wrapper">
+				<h1>WATCHLIST</h1>
+				<form id="search-form">
+					<div id="search-bar-wrapper">
+						<input type="search" id="search-bar" name="title" placeholder="enter a title" required disabled></input>
+						<button id="submit-btn" type="submit" disabled>
+							<i class="fa-solid fa-magnifying-glass"></i>
+						</button>
+					</div>
+					<div id="search-types">
+						<p>Search type:</p>
+						<div class="type-choice">
+							<input type="radio" name="type" id="exact-search" data-letter="t" checked />
+							<label for="exact-search">Exact</label>
+						</div>
+						<div class="type-choice">
+							<input type="radio" name="type" id="fuzzy-search" data-letter="s" />
+							<label for="fuzzy-search">Fuzzy</label>
+						</div>
+					</div>
+				</form>
+			</div>
+		</header>
+		<main>
+			<div id="watchlist-cards-wrapper" class="cards-wrapper space-saver">
+				<p id="no-result-message">your watchlist is empty.</p>
+				<i class="fa-solid fa-film"></i>
+			</div>
+		</main>
+	</div>
+
+	<script src="index.js"></script>
+	<script>
+		const watchlistCardsWrapper = document.getElementById('watchlist-cards-wrapper');
+		watchlistArray = localStorageWatchlist;
+
+		renderWatchlist();
+
+		function generateWatchlistHtml (watchlistArray) {
+			let allMovieCards = '';
+			watchlistArray.forEach(movie => {
+				allMovieCards +=
+					`<article class="movie-card fuzzy-results">
+					<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
+					<div class="movie-details">
+						<div class="title-watchlist">
+							<h2>${movie.title}</h2>
+							<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbId}"></i>
+						</div>
+						<p class="year">${movie.year}</p>
+						<details id="more">
+							<summary>more</summary>
+							<div>
+								<p>The other details will go here.</p>
+							</div>
+						</details>
+					</div>
+				</article>
+				<hr class="card-divider">`;
+			});
+			watchlistCardsWrapper.classList.replace('space-saver', 'cards');
+			watchlistCardsWrapper.innerHTML = allMovieCards;
+		}
+
+		// TODO: not sure if it's necessary to have separate render and generatehtml functions; remove this if not.
+		function renderWatchlist () {
+			generateWatchlistHtml(watchlistArray);
+		}
+	</script>
+</body>

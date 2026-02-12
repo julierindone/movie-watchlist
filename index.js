@@ -3,6 +3,7 @@ const searchForm = document.getElementById('search-form');
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
 const noResultMessage = document.getElementById('no-result-message');
 const searchBar = document.getElementById('search-bar');
+const cardsWrapper = document.querySelectorAll('.cards-wrapper');
 
 // // FIND-FILM VARIABLES // //
 const movieCardsWrapper = document.getElementById('movie-cards-wrapper');
@@ -10,9 +11,8 @@ const movieCardsWrapper = document.getElementById('movie-cards-wrapper');
 // // WATCHLIST VARIABLES // //
 
 let resultArray = [];
-let watchlistArray = [];
-
-console.log(JSON.parse(localStorage.getItem("watchlist")))
+const localStorageWatchlist = JSON.parse(localStorage.getItem("watchlist"));
+let watchlistArray = localStorageWatchlist;
 
 // // SHARED LISTENERS // //
 
@@ -75,7 +75,6 @@ function getExactResult (data) {
   let thumbnail = getThumbnail(data);
   let rating = data.Ratings[1] ? data.Ratings[1].Value : "???";
 
-  // TODO: Take off backticks.
   const movie = {
     title: data.Title,
     imdbId: data.imdbID,
@@ -83,12 +82,13 @@ function getExactResult (data) {
     runtime: data.Runtime,
     year: data.Year,
     genre: data.Genre,
-    watchlist: false,
     plot: data.Plot,
     thumbnail: thumbnail,
     alt: `poster for ${data.Title}`
   };
 
+  // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
+  movie.watchlist = getWatchlistStatus(movie.imdbId);
   resultArray.push(movie);
 }
 
@@ -102,28 +102,32 @@ function getFuzzyResults (data) {
         title: currentMovie.Title,
         imdbId: currentMovie.imdbID,
         year: currentMovie.Year,
-        watchlist: false,
         thumbnail: thumbnail,
         alt: `poster for ${currentMovie.Title}`
       };
+
+      // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
+      movie.watchlist = getWatchlistStatus(movie.imdbId);
       resultArray.push(movie);
     }
   });
 }
 
+function getWatchlistStatus (chosenImdbId) {
+  return watchlistArray.some(movie => movie.imdbId === chosenImdbId);
+}
+
 function generateExactResultHtml (resultArray) {
-  // TODO: I had to update this to use resultArray and haven't tested it out yet!
-
   let movie = resultArray[0];
+  let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 
-  // NOTE: p.watchlist class prob doesn't need to exist but I don't feel confident in changing it right now
   movieCardsWrapper.innerHTML = `
   <article class="movie-card">
     <img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
       <div class="movie-details">
         <div class="title-watchlist">
           <h2>${movie.title}</h2>
-			    <i class="fa-solid fa-circle-plus" data-imdb-id="${movie.imdbId}"></i>
+			    <i class="fa-solid fa-circle-${watchlistIcon}" data-imdb-id="${movie.imdbId}"></i>
         </div>
         <div class="runtime-year-genre-rating">
           <div class="runtime-year-genre">
@@ -200,9 +204,7 @@ function handleWatchlistIconClick (chosenImdbId) {
 
         // remove movie from watchlist
         watchlistArray.splice(i, 1);
-
-        // update icon to plus
-        document.querySelector(`[data-imdb-id="${chosenMovie.imdbId}"]`).classList.replace('fa-circle-check', 'fa-circle-plus');
+        localStorage.setItem("watchlist", JSON.stringify(watchlistArray));
       }
     }
   }
@@ -214,7 +216,7 @@ function handleWatchlistIconClick (chosenImdbId) {
 
     // add movie to array and push updated array to localStorage
     watchlistArray.push(chosenMovie);
-    localStorage.setItem("watchlist", JSON.stringify(watchlistArray))
+    localStorage.setItem("watchlist", JSON.stringify(watchlistArray));
 
     // update icon to show checkmark
     document.querySelector(`[data-imdb-id="${chosenMovie.imdbId}"]`).classList.replace('fa-circle-plus', 'fa-circle-check');
@@ -222,15 +224,22 @@ function handleWatchlistIconClick (chosenImdbId) {
 }
 
 function resetAll (message = null) {
-  movieCardsWrapper.innerHTML = '';
+  cardsWrapper.forEach(wrapper => {
+    wrapper.innerHTML = '';
+    wrapper.classList.replace('cards', 'space-saver');
   resultArray = [];
-  movieCardsWrapper.classList.replace('cards', 'space-saver');
   if (message === null) {
     message = '';
   }
+
+    if (wrapper.id === 'movie-cards-wrapper') {
   movieCardsWrapper.innerHTML = `
   			<p id="no-result-message">${message}</p>
 				<i class="fa-solid fa-film"></i>`;
+    }
+  });
+
+  resultArray = [];
 }
 
 function getDetails () {
