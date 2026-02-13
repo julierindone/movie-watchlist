@@ -61,12 +61,12 @@
 
 	<script src="index.js"></script>
 	<script>
-		const watchlistCardsWrapper = document.getElementById('watchlist-cards-wrapper');
-		watchlistArray = localStorageWatchlist;
+		cardWrapperType = "watchlistCards";
 
-		renderWatchlist();
+		renderContent();
 
 		function generateWatchlistHtml (watchlistArray) {
+			if (watchlistArray.length > 0) {
 			let allMovieCards = '';
 			watchlistArray.forEach(movie => {
 				allMovieCards +=
@@ -92,9 +92,9 @@
 			watchlistCardsWrapper.innerHTML = allMovieCards;
 		}
 
-		// TODO: not sure if it's necessary to have separate render and generatehtml functions; remove this if not.
-		function renderWatchlist () {
-			generateWatchlistHtml(watchlistArray);
+			else {
+				resetAll()
+			}
 		}
 	</script>
 </body>

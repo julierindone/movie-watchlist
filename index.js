@@ -1,20 +1,24 @@
-// // SHARED VARIABLES // //
-const searchForm = document.getElementById('search-form');
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
-const noResultMessage = document.getElementById('no-result-message');
+const searchForm = document.getElementById('search-form');
 const searchBar = document.getElementById('search-bar');
 const cardsWrapper = document.querySelectorAll('.cards-wrapper');
 
 // // FIND-FILM VARIABLES // //
 const movieCardsWrapper = document.getElementById('movie-cards-wrapper');
+const watchlistCardsWrapper = document.getElementById('watchlist-cards-wrapper');
+const noResultMessage = document.getElementById('no-result-message');
 
-// // WATCHLIST VARIABLES // //
 
-let resultArray = [];
-const localStorageWatchlist = JSON.parse(localStorage.getItem("watchlist"));
-let watchlistArray = localStorageWatchlist;
+let resultsArray = [];
+let watchlistArray = [];
+let localStorageWatchlist = null;
+let cardWrapperType = ''; // watchlistCardWrapper, fuzzyResultsCardWrapper, exactResultCardWrapper
 
-// // SHARED LISTENERS // //
+setWatchlistArray();
+
+/* ====================================== */
+/* ========== LISTENERS ========== */
+/* ====================================== */
 
 document.addEventListener('click', (event) => {
   if (event.target.id === 'search-bar') {
@@ -31,9 +35,6 @@ document.addEventListener('click', (event) => {
 searchBar.addEventListener('blur', () => {
   searchBarWrapper.classList.remove('fancy-focus');
 });
-
-// TODO: Add listener to handle missing images
-// https://dillionmegida.com/p/default-image-src/
 
 searchForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -62,14 +63,23 @@ searchForm.addEventListener('submit', async (e) => {
 
     if (typeOfSearch === 't') {
       getExactResult(data);
-      generateExactResultHtml(resultArray);
+      generateExactResultHtml(resultsArray);
     }
     else {
       getFuzzyResults(data);
-      generateFuzzyResultsHtml(resultArray);
+      generateFuzzyResultsHtml(resultsArray);
     }
   }
 });
+
+// TODO: Add listener to handle missing images
+// https://dillionmegida.com/p/default-image-src/
+
+
+/* ====================================== */
+/* ========== FUNCTIONS ========== */
+/* ====================================== */
+
 
 function getExactResult (data) {
   let thumbnail = getThumbnail(data);
@@ -89,7 +99,8 @@ function getExactResult (data) {
 
   // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
   movie.watchlist = getWatchlistStatus(movie.imdbId);
-  resultArray.push(movie);
+  resultsArray.push(movie);
+  cardWrapperType = "exactResultCard";
 }
 
 // TODO: Limit to 10 entries and add "load more movies" button at bottom
@@ -108,7 +119,8 @@ function getFuzzyResults (data) {
 
       // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
       movie.watchlist = getWatchlistStatus(movie.imdbId);
-      resultArray.push(movie);
+      resultsArray.push(movie);
+      cardWrapperType = "fuzzyResultsCards";
     }
   });
 }
@@ -117,8 +129,8 @@ function getWatchlistStatus (chosenImdbId) {
   return watchlistArray.some(movie => movie.imdbId === chosenImdbId);
 }
 
-function generateExactResultHtml (resultArray) {
-  let movie = resultArray[0];
+function generateExactResultHtml (resultsArray) {
+  let movie = resultsArray[0];
   let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 
   movieCardsWrapper.innerHTML = `
@@ -147,17 +159,18 @@ function generateExactResultHtml (resultArray) {
   movieCardsWrapper.classList.replace('space-saver', 'cards');
 }
 
-function generateFuzzyResultsHtml (resultArray) {
+function generateFuzzyResultsHtml (resultsArray) {
 
   let allMovieCards = '';
-  resultArray.forEach(movie => {
+  resultsArray.forEach(movie => {
+    let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
     allMovieCards +=
       `<article class="movie-card fuzzy-results">
         <img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
         <div class="movie-details">
           <div class="title-watchlist">
             <h2>${movie.title}</h2>
-            <i class="fa-solid fa-circle-plus" data-imdb-id="${movie.imdbId}"></i>
+            <i class="fa-solid fa-circle-${watchlistIcon}" data-imdb-id="${movie.imdbId}"></i>
           </div>
           <p class="year">${movie.year}</p>
           <details id="more">
@@ -185,41 +198,73 @@ function getThumbnail (data) {
 }
 
 function handleWatchlistIconClick (chosenImdbId) {
-  // identify chosen movie in resultArray to get its watchlist status
-  let chosenMovie = resultArray.filter(movie => {
-    return movie.imdbId === chosenImdbId;
-  })[0];
+  let chosenMovie = '';
 
-  // check chosenMovie.watchlist status to know if it's already on the watchjlist.
-  // if it is, remove it.
-  if (chosenMovie.watchlist) {
-
-    // find the index of the movie in the watchlist
-    for (let i = 0; i < watchlistArray.length; i++) {
-      let movie = watchlistArray[i];
-
-      //  when it finds the match, update watchlist status in movie object
-      if (movie.imdbId === chosenImdbId) {
-        chosenMovie.watchlist = false;
-
-        // remove movie from watchlist
-        watchlistArray.splice(i, 1);
-        localStorage.setItem("watchlist", JSON.stringify(watchlistArray));
-      }
-    }
+  // GET CHOSEN MOVIE
+  if (cardWrapperType === "watchlistCards") {
+    // watchlistArray - find clicked movie & assign to chosenMovie
+    chosenMovie = watchlistArray.find(movie => movie.imdbId === chosenImdbId);
+  }
+  else {
+    // resultsArray - find clicked movie & assign to chosenMovie
+    chosenMovie = resultsArray.find(movie => movie.imdbId === chosenImdbId);
   }
 
-  // the movie needs to be added to watchlist
+  // GET WATCHLIST STATUS
+
+  // if it's on the watchlist, remove it
+  if (chosenMovie.watchlist) {
+        chosenMovie.watchlist = false;
+    // get index and remove from watchlistArray
+    let index = watchlistArray.findIndex(movie => movie.imdbId === chosenMovie.imdbId);
+    watchlistArray.splice(index, 1);
+  }
   else {
-    // update watchlist value
     chosenMovie.watchlist = true;
-
-    // add movie to array and push updated array to localStorage
     watchlistArray.push(chosenMovie);
-    localStorage.setItem("watchlist", JSON.stringify(watchlistArray));
+  }
 
-    // update icon to show checkmark
-    document.querySelector(`[data-imdb-id="${chosenMovie.imdbId}"]`).classList.replace('fa-circle-plus', 'fa-circle-check');
+  // update localStorage
+    localStorage.setItem("watchlist", JSON.stringify(watchlistArray));
+  renderContent();
+}
+
+function getDetails () {
+  // TODO: Onclick of details, fetch data from the exact match version of the movie selected so it can be opened in the expansion.
+}
+
+
+/* ====================================== */
+/* ========== HELPER FUNCTIONS ========== */
+/* ====================================== */
+
+
+
+function setWatchlistArray () {
+  const raw = localStorage.getItem("watchlist");
+
+  // if it doesn't exist, create it.
+  if (raw === null) {
+    console.log("watchlist doesn't exist. Initializing.");
+    localStorage.setItem("watchlist", JSON.stringify([]));
+    watchlistArray = [];
+    return;
+  }
+
+  // if it exists, parse it.
+  try {
+    watchlistArray = JSON.parse(raw);
+    console.log("watchlist loaded:", watchlistArray);
+  }
+
+  // if there's a parsing error, completely reset it.
+  catch (error) {
+    console.log(`corrupted JSON. Resetting.`);
+    watchlistArray = [];
+    localStorage.setItem("watchlist", JSON.stringify([]));
+
+    // REMOVE
+    console.log(`just a test to see ig by "No more lines in the function will execute" it means just inside that if or the entire function.`);
   }
 }
 
@@ -227,7 +272,8 @@ function resetAll (message = null) {
   cardsWrapper.forEach(wrapper => {
     wrapper.innerHTML = '';
     wrapper.classList.replace('cards', 'space-saver');
-  resultArray = [];
+    resultsArray = [];
+
   if (message === null) {
     message = '';
   }
@@ -239,9 +285,23 @@ function resetAll (message = null) {
     }
   });
 
-  resultArray = [];
+  resultsArray = [];
 }
 
-function getDetails () {
-  // TODO: Onclick of details, fetch data from the exact match version of the movie selected so it can be opened in the expansion.
+// render content based on whether watchlist or results are displayed
+function renderContent () {
+  console.log(`rendering cardWrapperType: ${cardWrapperType}`);
+  if (cardWrapperType === "watchlistCards")
+    generateWatchlistHtml(watchlistArray);
+
+  // These will require an update to the wrappers, which can be done after the watchlist one is working.
+  else if (cardWrapperType === "exactResultCard") {
+    generateExactResultHtml(resultsArray);
+  }
+
+  // cardWrapperType === "fuzzyResultsCards"
+  else {
+    generateFuzzyResultsHtml(resultsArray);
+  }
+
 }
