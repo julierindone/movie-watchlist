@@ -67,33 +67,33 @@
 
 		function generateWatchlistHtml (watchlistArray) {
 			if (watchlistArray.length > 0) {
-			let allMovieCards = '';
-			watchlistArray.forEach(movie => {
-				allMovieCards +=
-					`<article class="movie-card fuzzy-results">
-					<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
-					<div class="movie-details">
-						<div class="title-watchlist">
-							<h2>${movie.title}</h2>
-							<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbId}"></i>
-						</div>
-						<p class="year">${movie.year}</p>
-						<details id="more">
-							<summary>more</summary>
-							<div>
-								<p>The other details will go here.</p>
+				let allMovieCards = '';
+				watchlistArray.forEach(movie => {
+					allMovieCards += `
+					<article class="movie-card fuzzy-results">
+						<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
+						<div class="movie-details">
+							<div class="title-watchlist">
+								<h2>${movie.title}</h2>
+								<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbId}"></i>
 							</div>
-						</details>
-					</div>
-				</article>
-				<hr class="card-divider">`;
-			});
-			watchlistCardsWrapper.classList.replace('space-saver', 'cards');
-			watchlistCardsWrapper.innerHTML = allMovieCards;
-		}
+							<p class="year">${movie.year}</p>
+							<details id="more">
+								<summary>more</summary>
+								<div>
+									<p>The other details will go here.</p>
+								</div>
+							</details>
+						</div>
+					</article>
+					<hr class="card-divider">`;
+				});
+				watchlistCardsWrapper.classList.replace('space-saver', 'cards');
+				watchlistCardsWrapper.innerHTML = allMovieCards;
+			}
 
 			else {
-				resetAll()
+				resetAll();
 			}
 		}
 	</script>

@@ -33,6 +33,10 @@
   padding-inline: 4.3vw;
   text-align: left;
 
+  & article:first-of-type {
+    margin-top: 0.1em;
+  }
+
   hr.card-divider {
     height: 0.5px;
     border-color: var(--white);
@@ -97,22 +101,22 @@ div.movie-details {
 
 article.movie-card.fuzzy-results {
 
-  gap: 1.05em;
+  gap: 0.65em;
 
   > div.movie-details {
 
     > .year {
-      font-size: 1rem;
-      line-height: 0.7;
+      font-size: 0.8em;
     }
 
     > details#more {
-      margin-top: 1rem;
+      margin-top: 0.7em;
 
       > summary {
         list-style: none;
         font-size: 0.85em;
         color: hsl(187deg 36.15% 70.66%);
+
         &:hover {
           font-style: italic;
           font-size: 0.95em;
@@ -188,6 +192,17 @@ article.movie-card.fuzzy-results {
 
     > p.plot {
       font-size: 0.95rem;
+    }
+  }
+
+  article.movie-card.fuzzy-results {
+
+    gap: 1.05em;
+
+    div.movie-details {
+      .year {
+        line-height: 0.7;
+      }
     }
   }
 }
