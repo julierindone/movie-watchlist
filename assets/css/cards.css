@@ -7,9 +7,10 @@
 .cards-wrapper {
   background-color: var(--black);
   flex: 1 1;
-  padding-top: .5em;
+  padding-top: .75em;
+}
 
-  &.space-saver {
+.space-saver {
     display: flex;
     flex-flow: column wrap;
     justify-content: center;
@@ -25,7 +26,6 @@
       width: min(390px, 80%);
     }
   }
-}
 
 .cards {
   color: var(--white);
@@ -136,7 +136,7 @@ article.movie-card.fuzzy-results {
 	============================== */
 
 .thumbnail {
-  width: max(90px, 14%);
+  width: max(90px, 11%);
   font-size: .8rem;
   object-fit: contain;
   margin-top: 0.3rem;

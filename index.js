@@ -32,9 +32,13 @@ document.addEventListener('click', (event) => {
   }
 });
 
+if (searchBar) {
 searchBar.addEventListener('blur', () => {
   searchBarWrapper.classList.remove('fancy-focus');
 });
+}
+
+if (searchForm) {
 
 searchForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -71,6 +75,7 @@ searchForm.addEventListener('submit', async (e) => {
     }
   }
 });
+}
 
 // TODO: Add listener to handle missing images
 // https://dillionmegida.com/p/default-image-src/
@@ -201,7 +206,7 @@ function handleWatchlistIconClick (chosenImdbId) {
   let chosenMovie = '';
 
   // GET CHOSEN MOVIE
-  if (cardWrapperType === "watchlistCards") {
+  if (cardSection.querySelector('#watchlist-cards-wrapper')) {
     // watchlistArray - find clicked movie & assign to chosenMovie
     chosenMovie = watchlistArray.find(movie => movie.imdbId === chosenImdbId);
   }
@@ -254,7 +259,6 @@ function setWatchlistArray () {
   // if it exists, parse it.
   try {
     watchlistArray = JSON.parse(raw);
-    console.log("watchlist loaded:", watchlistArray);
   }
 
   // if there's a parsing error, completely reset it.
@@ -269,7 +273,8 @@ function setWatchlistArray () {
 }
 
 function resetAll (message = null) {
-  cardsWrapper.forEach(wrapper => {
+  let wrapper = cardWrapperType;
+  cardsWrapperClassQuery.forEach(wrapper => {
     wrapper.innerHTML = '';
     wrapper.classList.replace('cards', 'space-saver');
     resultsArray = [];
@@ -290,9 +295,9 @@ function resetAll (message = null) {
 
 // render content based on whether watchlist or results are displayed
 function renderContent () {
-  console.log(`rendering cardWrapperType: ${cardWrapperType}`);
-  if (cardWrapperType === "watchlistCards")
+  if (cardSection.querySelector('#watchlist-cards-wrapper')) {
     generateWatchlistHtml(watchlistArray);
+  }
 
   // These will require an update to the wrappers, which can be done after the watchlist one is working.
   else if (cardWrapperType === "exactResultCard") {
@@ -303,5 +308,4 @@ function renderContent () {
   else {
     generateFuzzyResultsHtml(resultsArray);
   }
-
 }

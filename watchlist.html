@@ -15,45 +15,32 @@
 
 <!-- TODO: Move the actual HTML to be generated within the index.html page -->
 
-<body>
+<body id="watchlist">
 	<div class="body-wrapper">
 		<nav class="nav-bar">
 			<div class="nav-wrapper">
 				<a href="index.html">
-					find
+					search
 				</a>
 				<a href="watchlist.html">
-					list
+					watchlist
 				</a>
+				<!-- TODO: change to a tag after creation -->
+				<p>
+					about
+				</p>
 			</div>
 		</nav>
 		<header>
 			<div class="header-text-wrapper">
 				<h1>WATCHLIST</h1>
-				<form id="search-form">
-					<div id="search-bar-wrapper">
-						<input type="search" id="search-bar" name="title" placeholder="enter a title" required disabled></input>
-						<button id="submit-btn" type="submit" disabled>
-							<i class="fa-solid fa-magnifying-glass"></i>
-						</button>
-					</div>
-					<div id="search-types">
-						<p>Search type:</p>
-						<div class="type-choice">
-							<input type="radio" name="type" id="exact-search" data-letter="t" checked />
-							<label for="exact-search">Exact</label>
-						</div>
-						<div class="type-choice">
-							<input type="radio" name="type" id="fuzzy-search" data-letter="s" />
-							<label for="fuzzy-search">Fuzzy</label>
-						</div>
-					</div>
-				</form>
+				<!-- Removing form until i decide what kind of handling it should have on the watchlist page -->
 			</div>
 		</header>
-		<main>
-			<div id="watchlist-cards-wrapper" class="cards-wrapper space-saver">
-				<p id="no-result-message">your watchlist is empty.</p>
+		<main id="card-section" class="space-saver">
+			<div id="no-result-message">
+				<p>your watchlist is empty.</p>
+				<p>visit the <a href="index.html">search page</a> to find your favorites.</p>
 				<i class="fa-solid fa-film"></i>
 			</div>
 		</main>
@@ -61,13 +48,13 @@
 
 	<script src="index.js"></script>
 	<script>
-		cardWrapperType = "watchlistCards";
 
-		renderContent();
+		generateWatchlistHtml(watchlistArray);
 
 		function generateWatchlistHtml (watchlistArray) {
 			if (watchlistArray.length > 0) {
-				let allMovieCards = '';
+				let allMovieCards = `<div id="watchlist-cards-wrapper" class="cards-wrapper cards">`;
+
 				watchlistArray.forEach(movie => {
 					allMovieCards += `
 					<article class="movie-card fuzzy-results">
@@ -88,8 +75,11 @@
 					</article>
 					<hr class="card-divider">`;
 				});
-				watchlistCardsWrapper.classList.replace('space-saver', 'cards');
-				watchlistCardsWrapper.innerHTML = allMovieCards;
+
+				allMovieCards += `</div>`;
+
+				cardSection.classList.remove('space-saver');
+				cardSection.innerHTML = allMovieCards;
 			}
 
 			else {
