@@ -36,28 +36,20 @@
 				<h1>WATCHLIST</h1>
 				<!-- Removing form until i decide what kind of handling it should have on the watchlist page -->
 			</div>
-		</header>
-		<main id="card-section" class="space-saver">
-			<div id="no-result-message">
-				<p>your watchlist is empty.</p>
-				<p>visit the <a href="index.html">search page</a> to find your favorites.</p>
-				<i class="fa-solid fa-film"></i>
-			</div>
-		</main>
-	</div>
-
 	<script src="index.js"></script>
 	<script>
+		const watchlistCardsWrapper = document.getElementById('watchlist-cards-wrapper');
+		cardWrapperType = "watchlistCardsWrapper";
 
 		generateWatchlistHtml(watchlistArray);
 
-		function generateWatchlistHtml (watchlistArray) {
+		function generateWatchlistHtml(watchlistArray) {
 			if (watchlistArray.length > 0) {
 				let allMovieCards = `<div id="watchlist-cards-wrapper" class="cards-wrapper cards">`;
 
 				watchlistArray.forEach(movie => {
-					allMovieCards += `
-					<article class="movie-card fuzzy-results">
+					allMovieCards +=
+						`<article class="movie-card fuzzy-results">
 						<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
 						<div class="movie-details">
 							<div class="title-watchlist">

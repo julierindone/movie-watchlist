@@ -1,18 +1,14 @@
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
 const searchForm = document.getElementById('search-form');
 const searchBar = document.getElementById('search-bar');
-const cardsWrapper = document.querySelectorAll('.cards-wrapper');
-
-// // FIND-FILM VARIABLES // //
-const movieCardsWrapper = document.getElementById('movie-cards-wrapper');
-const watchlistCardsWrapper = document.getElementById('watchlist-cards-wrapper');
-const noResultMessage = document.getElementById('no-result-message');
-
-
+const cardsWrapperClassQuery = document.querySelectorAll('.cards-wrapper');
+const cardSection = document.getElementById('card-section');
+const exactResultsWrapper = document.getElementById('exact-results-wrapper');
+const fuzzyResultsWrapper = document.getElementById('fuzzy-results-wrapper');
+const resultsSpaceSaver = document.getElementById('results-space-saver');
 let resultsArray = [];
 let watchlistArray = [];
-let localStorageWatchlist = null;
-let cardWrapperType = ''; // watchlistCardWrapper, fuzzyResultsCardWrapper, exactResultCardWrapper
+let cardWrapperType = '';
 
 setWatchlistArray();
 
@@ -33,48 +29,48 @@ document.addEventListener('click', (event) => {
 });
 
 if (searchBar) {
-searchBar.addEventListener('blur', () => {
-  searchBarWrapper.classList.remove('fancy-focus');
-});
+  searchBar.addEventListener('blur', () => {
+    searchBarWrapper.classList.remove('fancy-focus');
+  });
 }
 
 if (searchForm) {
+  searchForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
 
-searchForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const key = 'aad30e17';
-  const titleToSearch = (searchBar.value).replaceAll(' ', '+');
-  let typeOfSearch = '';
-  const typeNames = document.getElementsByName('type');
-  for (let type of typeNames) {
-    if (type.checked) {
-      typeOfSearch = type.dataset.letter;
-      break;
+    const key = 'aad30e17';
+    const titleToSearch = (searchBar.value).replaceAll(' ', '+');
+    let typeOfSearch = '';
+    const typeNames = document.getElementsByName('type');
+    for (let type of typeNames) {
+      if (type.checked) {
+        typeOfSearch = type.dataset.letter;
+        break;
+      }
     }
-  }
 
-  const response = await fetch(`https://omdbapi.com/?${typeOfSearch}=${titleToSearch}&apikey=${key}`);
-  const data = await response.json();
+    const response = await fetch(`https://omdbapi.com/?${typeOfSearch}=${titleToSearch}&apikey=${key}`);
+    const data = await response.json();
 
-  if (data.Response !== "True") {
-    let message = `I couldn't find that title. Check your spelling and try again.`;
-    resetAll(message);
-  }
-
-  else {
-    resetAll();
-
-    if (typeOfSearch === 't') {
-      getExactResult(data);
-      generateExactResultHtml(resultsArray);
+    if (data.Response !== "True") {
+      resetAll(false);
     }
+
     else {
-      getFuzzyResults(data);
-      generateFuzzyResultsHtml(resultsArray);
+      resetAll();
+
+      if (typeOfSearch === 't') {
+        getExactResult(data);
+        cardWrapperType = "exactResultsWrapper";
+        generateExactResultHtml(resultsArray);
+      }
+      else {
+        getFuzzyResults(data);
+        cardWrapperType = "fuzzyResultsWrapper";
+        generateFuzzyResultsHtml(resultsArray);
+      }
     }
-  }
-});
+  });
 }
 
 // TODO: Add listener to handle missing images
@@ -86,7 +82,7 @@ searchForm.addEventListener('submit', async (e) => {
 /* ====================================== */
 
 
-function getExactResult (data) {
+function getExactResult(data) {
   let thumbnail = getThumbnail(data);
   let rating = data.Ratings[1] ? data.Ratings[1].Value : "???";
 
@@ -105,11 +101,10 @@ function getExactResult (data) {
   // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
   movie.watchlist = getWatchlistStatus(movie.imdbId);
   resultsArray.push(movie);
-  cardWrapperType = "exactResultCard";
 }
 
 // TODO: Limit to 10 entries and add "load more movies" button at bottom
-function getFuzzyResults (data) {
+function getFuzzyResults(data) {
   data.Search.forEach(currentMovie => {
     if (!(currentMovie.Title.toLowerCase().includes("commentary"))) {
       let thumbnail = getThumbnail(currentMovie);
@@ -125,21 +120,21 @@ function getFuzzyResults (data) {
       // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
       movie.watchlist = getWatchlistStatus(movie.imdbId);
       resultsArray.push(movie);
-      cardWrapperType = "fuzzyResultsCards";
     }
   });
 }
 
-function getWatchlistStatus (chosenImdbId) {
+function getWatchlistStatus(chosenImdbId) {
   return watchlistArray.some(movie => movie.imdbId === chosenImdbId);
 }
 
-function generateExactResultHtml (resultsArray) {
+function generateExactResultHtml(resultsArray) {
+  let allMovieCards = `<div id="exact-results-wrapper" class="cards-wrapper cards">`;
   let movie = resultsArray[0];
   let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 
-  movieCardsWrapper.innerHTML = `
-  <article class="movie-card">
+  allMovieCards +=
+    `<article class="movie-card">
     <img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
       <div class="movie-details">
         <div class="title-watchlist">
@@ -160,13 +155,15 @@ function generateExactResultHtml (resultsArray) {
       </div>
     </article>
     <hr class="card-divider">`;
+  allMovieCards += `</div>`;
 
-  movieCardsWrapper.classList.replace('space-saver', 'cards');
+  cardSection.classList.remove('space-saver');
+  cardSection.innerHTML = allMovieCards;
 }
 
-function generateFuzzyResultsHtml (resultsArray) {
+function generateFuzzyResultsHtml(resultsArray) {
+  let allMovieCards = `<div id="fuzzy-results-wrapper" class="cards-wrapper cards">`;
 
-  let allMovieCards = '';
   resultsArray.forEach(movie => {
     let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
     allMovieCards +=
@@ -189,11 +186,13 @@ function generateFuzzyResultsHtml (resultsArray) {
       <hr class="card-divider">`;
   });
 
-  movieCardsWrapper.classList.replace('space-saver', 'cards');
-  movieCardsWrapper.innerHTML = allMovieCards;
+  allMovieCards += `</div>`;
+
+  cardSection.classList.remove('space-saver');
+  cardSection.innerHTML = allMovieCards;
 }
 
-function getThumbnail (data) {
+function getThumbnail(data) {
   if ((data.Poster.toLowerCase() === "n/a") || (!data.Poster)) {
     return "assets/images/film_icon.png";
   }
@@ -202,7 +201,7 @@ function getThumbnail (data) {
   }
 }
 
-function handleWatchlistIconClick (chosenImdbId) {
+function handleWatchlistIconClick(chosenImdbId) {
   let chosenMovie = '';
 
   // GET CHOSEN MOVIE
@@ -219,7 +218,7 @@ function handleWatchlistIconClick (chosenImdbId) {
 
   // if it's on the watchlist, remove it
   if (chosenMovie.watchlist) {
-        chosenMovie.watchlist = false;
+    chosenMovie.watchlist = false;
     // get index and remove from watchlistArray
     let index = watchlistArray.findIndex(movie => movie.imdbId === chosenMovie.imdbId);
     watchlistArray.splice(index, 1);
@@ -230,22 +229,15 @@ function handleWatchlistIconClick (chosenImdbId) {
   }
 
   // update localStorage
-    localStorage.setItem("watchlist", JSON.stringify(watchlistArray));
+  localStorage.setItem("watchlist", JSON.stringify(watchlistArray));
   renderContent();
 }
 
-function getDetails () {
+function getDetails() {
   // TODO: Onclick of details, fetch data from the exact match version of the movie selected so it can be opened in the expansion.
 }
 
-
-/* ====================================== */
-/* ========== HELPER FUNCTIONS ========== */
-/* ====================================== */
-
-
-
-function setWatchlistArray () {
+function setWatchlistArray() {
   const raw = localStorage.getItem("watchlist");
 
   // if it doesn't exist, create it.
@@ -266,46 +258,44 @@ function setWatchlistArray () {
     console.log(`corrupted JSON. Resetting.`);
     watchlistArray = [];
     localStorage.setItem("watchlist", JSON.stringify([]));
-
-    // REMOVE
-    console.log(`just a test to see ig by "No more lines in the function will execute" it means just inside that if or the entire function.`);
   }
 }
 
-function resetAll (message = null) {
-  let wrapper = cardWrapperType;
-  cardsWrapperClassQuery.forEach(wrapper => {
-    wrapper.innerHTML = '';
-    wrapper.classList.replace('cards', 'space-saver');
-    resultsArray = [];
+/* ====================================== */
+/* ========== HELPER FUNCTIONS ========== */
+/* ====================================== */
 
-  if (message === null) {
-    message = '';
-  }
+function renderContent() {
+  cardWrapperType === "fuzzyResultsWrapper" ? generateFuzzyResultsHtml(resultsArray) :
+    cardWrapperType === "exactResultsWrapper" ? generateExactResultHtml(resultsArray) :
+      generateWatchlistHtml(watchlistArray);
+}
 
-    if (wrapper.id === 'movie-cards-wrapper') {
-  movieCardsWrapper.innerHTML = `
-  			<p id="no-result-message">${message}</p>
-				<i class="fa-solid fa-film"></i>`;
-    }
-  });
-
+function resetAll(hasResponse = true) {
+  cardSection.classList.add('space-saver');
   resultsArray = [];
+  getSpaceSaver(hasResponse);
 }
 
-// render content based on whether watchlist or results are displayed
-function renderContent () {
-  if (cardSection.querySelector('#watchlist-cards-wrapper')) {
-    generateWatchlistHtml(watchlistArray);
+function getSpaceSaver(hasResponse = true) {
+  console.log(`in getSpaceSaver`);
+
+  if (!hasResponse) {
+    message = `<p>Something went wrong!<br>Please try again.</p>`;
   }
 
-  // These will require an update to the wrappers, which can be done after the watchlist one is working.
-  else if (cardWrapperType === "exactResultCard") {
-    generateExactResultHtml(resultsArray);
+  else if (cardWrapperType === "fuzzyResultsWrapper" || cardWrapperType === "exactResultsWrapper") {
+    message = `<p>I couldn't find that title.<br>Check your spelling and try again.</p>`;
   }
-
-  // cardWrapperType === "fuzzyResultsCards"
   else {
-    generateFuzzyResultsHtml(resultsArray);
+    message =
+      `<p>your watchlist is empty.</p>
+				<p>visit the <a href="index.html">search page</a> to find your favorites.</p>`;
   }
+
+  cardSection.innerHTML =
+    `<div id="results-space-saver">
+      ${message}
+      <i class="fa-solid fa-film"></i>
+    </div>`;
 }
