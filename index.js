@@ -38,6 +38,19 @@ if (searchForm) {
   searchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    fetchResults();
+  });
+}
+
+// TODO: Add listener to handle missing images
+// https://dillionmegida.com/p/default-image-src/
+
+
+/* ====================================== */
+/* ========== FUNCTIONS ========== */
+/* ====================================== */
+
+async function fetchResults() {
     const key = 'aad30e17';
     const titleToSearch = (searchBar.value).replaceAll(' ', '+');
     let typeOfSearch = '';
@@ -67,28 +80,10 @@ if (searchForm) {
       else {
         getFuzzyResults(data);
         cardWrapperType = "fuzzyResultsWrapper";
-        generateFuzzyResultsHtml(resultsArray);
-      }
+      generateFuzzyResultsHtml();
     }
-  });
+  }
 }
-
-// TODO: Add listener to handle missing images
-// https://dillionmegida.com/p/default-image-src/
-
-
-/* ====================================== */
-/* ========== FUNCTIONS ========== */
-/* ====================================== */
-
-
-function getExactResult(data) {
-  let thumbnail = getThumbnail(data);
-  let rating = data.Ratings[1] ? data.Ratings[1].Value : "???";
-
-  const movie = {
-    title: data.Title,
-    imdbId: data.imdbID,
     rating: rating,
     runtime: data.Runtime,
     year: data.Year,
