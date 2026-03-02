@@ -73,24 +73,50 @@ async function fetchResults() {
       resetAll();
 
       if (typeOfSearch === 't') {
-        getExactResult(data);
+      getResults(data);
         cardWrapperType = "exactResultsWrapper";
         generateExactResultHtml(resultsArray);
       }
       else {
-        getFuzzyResults(data);
+      getResults(data);
         cardWrapperType = "fuzzyResultsWrapper";
       generateFuzzyResultsHtml();
     }
   }
 }
+
+function getResults(data) {
+  let rawResults = [];
+
+  if (data.Search) {
+    rawResults = data.Search;
+  }
+  else {
+    rawResults = [data];
+  }
+
+  const resultsMap = rawResults.map(createMovieObject);
+  
+}
+
+function createMovieObject(singleMovie) {
+  if (!(singleMovie.Title.toLowerCase().includes("commentary"))) {
+    let thumbnail = getThumbnail(singleMovie.Poster);
+    let rating = null;
+    if (singleMovie.Ratings && singleMovie.Ratings[1]) {
+      rating = singleMovie.Ratings[1].Value;
+    }
+
+    return {
+      title: singleMovie.Title,
+      imdbId: singleMovie.imdbID,
     rating: rating,
-    runtime: data.Runtime,
-    year: data.Year,
-    genre: data.Genre,
-    plot: data.Plot,
+      runtime:singleMovie.Runtime ?? null,
+      year: singleMovie.Year  ?? null,
+      genre: singleMovie.Genre ?? null,
+      plot: singleMovie.Plot ?? null,
     thumbnail: thumbnail,
-    alt: `poster for ${data.Title}`
+      alt: `poster for ${singleMovie.Title}`
   };
 
   // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
