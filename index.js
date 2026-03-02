@@ -95,7 +95,7 @@ function getResults(data) {
     rawResults = [data];
   }
 
-  const resultsMap = rawResults.map(createMovieObject);
+  const resultsArray = rawResults.map(createMovieObject);
   
 }
 
@@ -107,23 +107,22 @@ function createMovieObject(singleMovie) {
       rating = singleMovie.Ratings[1].Value;
     }
 
-    return {
+    let movie = {
       title: singleMovie.Title,
       imdbId: singleMovie.imdbID,
-    rating: rating,
-      runtime:singleMovie.Runtime ?? null,
-      year: singleMovie.Year  ?? null,
+      rating: rating,
+      runtime: singleMovie.Runtime ?? null,
+      year: singleMovie.Year ?? null,
       genre: singleMovie.Genre ?? null,
       plot: singleMovie.Plot ?? null,
-    thumbnail: thumbnail,
-      alt: `poster for ${singleMovie.Title}`
-  };
+      thumbnail: thumbnail,
+      alt: `poster for ${singleMovie.Title}`,
+      watchlist: getWatchlistStatus(singleMovie.imdbID)
+    };
 
-  // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
-  movie.watchlist = getWatchlistStatus(movie.imdbId);
-  resultsArray.push(movie);
+    return movie;
+  }
 }
-
 // TODO: Limit to 10 entries and add "load more movies" button at bottom
 function getFuzzyResults(data) {
   data.Search.forEach(currentMovie => {
@@ -222,17 +221,17 @@ function getThumbnail(data) {
   }
 }
 
-function handleWatchlistIconClick(chosenImdbId) {
+function handleWatchlistIconClick(currentImdbId) {
   let chosenMovie = '';
 
   // GET CHOSEN MOVIE
   if (cardSection.querySelector('#watchlist-cards-wrapper')) {
     // watchlistArray - find clicked movie & assign to chosenMovie
-    chosenMovie = watchlistArray.find(movie => movie.imdbId === chosenImdbId);
+    chosenMovie = watchlistArray.find(movie => movie.imdbId === currentImdbId);
   }
   else {
     // resultsArray - find clicked movie & assign to chosenMovie
-    chosenMovie = resultsArray.find(movie => movie.imdbId === chosenImdbId);
+    chosenMovie = resultsArray.find(movie => movie.imdbId === currentImdbId);
   }
 
   // GET WATCHLIST STATUS
@@ -290,6 +289,10 @@ function renderContent() {
   cardWrapperType === "fuzzyResultsWrapper" ? generateFuzzyResultsHtml(resultsArray) :
     cardWrapperType === "exactResultsWrapper" ? generateExactResultHtml(resultsArray) :
       generateWatchlistHtml(watchlistArray);
+}
+
+function getWatchlistStatus(currentImdbId) {
+  return watchlistArray.some(movie => movie.imdbId === currentImdbId);
 }
 
 function resetAll(hasResponse = true) {
