@@ -1,14 +1,21 @@
+import * as fetch from './src/fetch.js';
+import * as helpers from './src/helpers.js';
+
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
 const searchForm = document.getElementById('search-form');
 const searchBar = document.getElementById('search-bar');
 const cardsWrapperClassQuery = document.querySelectorAll('.cards-wrapper');
 const cardSection = document.getElementById('card-section');
-const exactResultsWrapper = document.getElementById('exact-results-wrapper');
-const fuzzyResultsWrapper = document.getElementById('fuzzy-results-wrapper');
-const resultsSpaceSaver = document.getElementById('results-space-saver');
-let resultsArray = [];
 let watchlistArray = [];
 let cardWrapperType = '';
+export let resultsArray = [];
+export let currentResultIndex = 0;
+
+export function setCurrentResultIndex(lastIndex) {
+  currentResultIndex = lastIndex;
+}
+
+}
 
 setWatchlistArray();
 
@@ -37,8 +44,7 @@ if (searchBar) {
 if (searchForm) {
   searchForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-
-    fetchResults();
+    searchMovies();
   });
 }
 
@@ -50,105 +56,54 @@ if (searchForm) {
 /* ========== FUNCTIONS ========== */
 /* ====================================== */
 
-async function fetchResults() {
-    const key = 'aad30e17';
-    const titleToSearch = (searchBar.value).replaceAll(' ', '+');
-    let typeOfSearch = '';
-    const typeNames = document.getElementsByName('type');
-    for (let type of typeNames) {
-      if (type.checked) {
-        typeOfSearch = type.dataset.letter;
-        break;
-      }
-    }
+// TODO: move to separate js file
+async function searchMovies() {
+  const query = (searchBar.value).replaceAll(' ', '+');
+  const typeOfSearch = getSearchType();
 
-    const response = await fetch(`https://omdbapi.com/?${typeOfSearch}=${titleToSearch}&apikey=${key}`);
-    const data = await response.json();
+  // start with clean search result data
+  helpers.resetAll();
 
-    if (data.Response !== "True") {
-      resetAll(false);
-    }
+  // fetch data
+  let data = typeOfSearch === "exact"
+    ? await fetch.fetchExact(query)
+    : await fetch.fetchFuzzy(query);
 
-    else {
-      resetAll();
-
-      if (typeOfSearch === 't') {
-      getResults(data);
-        cardWrapperType = "exactResultsWrapper";
-        generateExactResultHtml(resultsArray);
-      }
-      else {
-      getResults(data);
-        cardWrapperType = "fuzzyResultsWrapper";
-      generateFuzzyResultsHtml();
-    }
-  }
-}
-
-function getResults(data) {
-  let rawResults = [];
-
-  if (data.Search) {
-    rawResults = data.Search;
-  }
-  else {
-    rawResults = [data];
+  // process data
+  if (data.Response !== "True") {
+    helpers.getSpaceSaver();
+    return;
   }
 
-  const resultsArray = rawResults.map(createMovieObject);
-  
+  // reassign data to be stored in arrays
+  data = typeOfSearch === "exact" ? [data] : data.Search
+
+  // create normalized array of movies
+  let movies = data.map(createMovieObject);
 }
 
-function createMovieObject(singleMovie) {
-  if (!(singleMovie.Title.toLowerCase().includes("commentary"))) {
-    let thumbnail = getThumbnail(singleMovie.Poster);
-    let rating = null;
-    if (singleMovie.Ratings && singleMovie.Ratings[1]) {
-      rating = singleMovie.Ratings[1].Value;
-    }
-
-    let movie = {
-      title: singleMovie.Title,
-      imdbId: singleMovie.imdbID,
-      rating: rating,
-      runtime: singleMovie.Runtime ?? null,
-      year: singleMovie.Year ?? null,
-      genre: singleMovie.Genre ?? null,
-      plot: singleMovie.Plot ?? null,
-      thumbnail: thumbnail,
-      alt: `poster for ${singleMovie.Title}`,
-      watchlist: getWatchlistStatus(singleMovie.imdbID)
-    };
-
-    return movie;
+function createMovieObject(movie) {
+  let thumbnail = getThumbnail(movie.Poster);
+  let rating = null;
+  if (movie.Ratings && movie.Ratings[1]) {
+    rating = movie.Ratings[1].Value;
   }
-}
-// TODO: Limit to 10 entries and add "load more movies" button at bottom
-function getFuzzyResults(data) {
-  data.Search.forEach(currentMovie => {
-    if (!(currentMovie.Title.toLowerCase().includes("commentary"))) {
-      let thumbnail = getThumbnail(currentMovie);
 
-      const movie = {
-        title: currentMovie.Title,
-        imdbId: currentMovie.imdbID,
-        year: currentMovie.Year,
-        thumbnail: thumbnail,
-        alt: `poster for ${currentMovie.Title}`
-      };
+  return {
+    title: movie.Title,
+    imdbId: movie.imdbID,
+    rating: rating,
+    runtime: movie.Runtime ?? null,
+    year: movie.Year ?? null,
+    genre: movie.Genre ?? null,
+    plot: movie.Plot ?? null,
+    thumbnail: thumbnail,
+    alt: `poster for ${movie.Title}`,
+    watchlist: getWatchlistStatus(movie.imdbID)
+  };
+}-
 
-      // check against watchlist to see if the movie is included. if it is, watchlist prop will be set to true.
-      movie.watchlist = getWatchlistStatus(movie.imdbId);
-      resultsArray.push(movie);
-    }
-  });
-}
 
-function getWatchlistStatus(chosenImdbId) {
-  return watchlistArray.some(movie => movie.imdbId === chosenImdbId);
-}
-
-function generateExactResultHtml(resultsArray) {
   let allMovieCards = `<div id="exact-results-wrapper" class="cards-wrapper cards">`;
   let movie = resultsArray[0];
   let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
@@ -212,12 +167,12 @@ function generateFuzzyResultsHtml(resultsArray) {
   cardSection.innerHTML = allMovieCards;
 }
 
-function getThumbnail(data) {
-  if ((data.Poster.toLowerCase() === "n/a") || (!data.Poster)) {
+function getThumbnail(poster) {
+  if (!(poster.toLowerCase().startsWith("http"))) {
     return "assets/images/film_icon.png";
   }
   else {
-    return data.Poster;
+    return poster;
   }
 }
 
@@ -284,6 +239,16 @@ function setWatchlistArray() {
 /* ====================================== */
 /* ========== HELPER FUNCTIONS ========== */
 /* ====================================== */
+
+function getSearchType() {
+  const searchTypes = document.getElementsByName('search-type');
+
+  for (let type of searchTypes) {
+    if (type.checked) {
+      return type.dataset.searchType;
+    }
+  }
+}
 
 function renderContent() {
   cardWrapperType === "fuzzyResultsWrapper" ? generateFuzzyResultsHtml(resultsArray) :
