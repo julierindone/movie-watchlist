@@ -69,25 +69,23 @@ async function searchMovies() {
     ? await fetch.fetchExact(query)
     : await fetch.fetchFuzzy(query);
 
-  // process data
-  if (data.Response !== "True") {
+  // validate data
+  if (!(fetch.isSuccessfulResponse(data))) {
     helpers.getSpaceSaver();
     return;
   }
 
   // reassign data to be stored in arrays
-  data = typeOfSearch === "exact" ? [data] : data.Search
+  data = fetch.toMovieArray(typeOfSearch, data);
 
   // create normalized array of movies
   let movies = data.map(createMovieObject);
 }
 
 function createMovieObject(movie) {
-  let thumbnail = getThumbnail(movie.Poster);
-  let rating = null;
-  if (movie.Ratings && movie.Ratings[1]) {
-    rating = movie.Ratings[1].Value;
-  }
+  let rating = (movie.Ratings && movie.Ratings[1])
+    ? movie.Ratings[1].Value
+    : null;
 
   return {
     title: movie.Title,
@@ -97,13 +95,11 @@ function createMovieObject(movie) {
     year: movie.Year ?? null,
     genre: movie.Genre ?? null,
     plot: movie.Plot ?? null,
-    thumbnail: thumbnail,
+    thumbnail: getThumbnail(movie.Poster) ?? null,
     alt: `poster for ${movie.Title}`,
     watchlist: getWatchlistStatus(movie.imdbID)
   };
-}-
-
-
+}
   let allMovieCards = `<div id="exact-results-wrapper" class="cards-wrapper cards">`;
   let movie = resultsArray[0];
   let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
