@@ -1,5 +1,7 @@
 import * as fetch from './src/fetch.js';
 import * as helpers from './src/helpers.js';
+import { createMovieObject } from './src/normalize.js';
+
 
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
 const searchForm = document.getElementById('search-form');
@@ -15,7 +17,7 @@ export function setCurrentResultIndex(lastIndex) {
   currentResultIndex = lastIndex;
 }
 
-}
+  fuzzyCardsHTML = '';
 
 setWatchlistArray();
 
@@ -56,7 +58,7 @@ if (searchForm) {
 /* ========== FUNCTIONS ========== */
 /* ====================================== */
 
-// TODO: move to separate js file
+// TODO: move to separate js file?
 async function searchMovies() {
   const query = (searchBar.value).replaceAll(' ', '+');
   const typeOfSearch = getSearchType();
@@ -70,7 +72,7 @@ async function searchMovies() {
     : await fetch.fetchFuzzy(query);
 
   // validate data
-  if (!(fetch.isSuccessfulResponse(data))) {
+  if (data.Response === "False") {
     helpers.getSpaceSaver();
     return;
   }
@@ -80,96 +82,6 @@ async function searchMovies() {
 
   // create normalized array of movies
   let movies = data.map(createMovieObject);
-}
-
-function createMovieObject(movie) {
-  let rating = (movie.Ratings && movie.Ratings[1])
-    ? movie.Ratings[1].Value
-    : null;
-
-  return {
-    title: movie.Title,
-    imdbId: movie.imdbID,
-    rating: rating,
-    runtime: movie.Runtime ?? null,
-    year: movie.Year ?? null,
-    genre: movie.Genre ?? null,
-    plot: movie.Plot ?? null,
-    thumbnail: getThumbnail(movie.Poster) ?? null,
-    alt: `poster for ${movie.Title}`,
-    watchlist: getWatchlistStatus(movie.imdbID)
-  };
-}
-  let allMovieCards = `<div id="exact-results-wrapper" class="cards-wrapper cards">`;
-  let movie = resultsArray[0];
-  let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
-
-  allMovieCards +=
-    `<article class="movie-card">
-    <img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
-      <div class="movie-details">
-        <div class="title-watchlist">
-          <h2>${movie.title}</h2>
-			    <i class="fa-solid fa-circle-${watchlistIcon}" data-imdb-id="${movie.imdbId}"></i>
-        </div>
-        <div class="runtime-year-genre-rating">
-          <div class="runtime-year-genre">
-            <p>${movie.year}&ensp;${movie.runtime}</p>
-            <p class="genre">${movie.genre}</p>
-          </div>
-          <p class="rating">
-            <i class="fa-solid fa-star"></i>
-            ${movie.rating}
-          </p>
-        </div>
-        <p class="plot">${movie.plot}</p>
-      </div>
-    </article>
-    <hr class="card-divider">`;
-  allMovieCards += `</div>`;
-
-  cardSection.classList.remove('space-saver');
-  cardSection.innerHTML = allMovieCards;
-}
-
-function generateFuzzyResultsHtml(resultsArray) {
-  let allMovieCards = `<div id="fuzzy-results-wrapper" class="cards-wrapper cards">`;
-
-  resultsArray.forEach(movie => {
-    let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
-    allMovieCards +=
-      `<article class="movie-card fuzzy-results">
-        <img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
-        <div class="movie-details">
-          <div class="title-watchlist">
-            <h2>${movie.title}</h2>
-            <i class="fa-solid fa-circle-${watchlistIcon}" data-imdb-id="${movie.imdbId}"></i>
-          </div>
-          <p class="year">${movie.year}</p>
-          <details id="more">
-            <summary>more</summary>
-            <div>
-              <p>The other details will go here.</p>
-            </div>
-          </details>
-        </div>
-      </article>
-      <hr class="card-divider">`;
-  });
-
-  allMovieCards += `</div>`;
-
-  cardSection.classList.remove('space-saver');
-  cardSection.innerHTML = allMovieCards;
-}
-
-function getThumbnail(poster) {
-  if (!(poster.toLowerCase().startsWith("http"))) {
-    return "assets/images/film_icon.png";
-  }
-  else {
-    return poster;
-  }
 }
 
 function handleWatchlistIconClick(currentImdbId) {
@@ -246,41 +158,7 @@ function getSearchType() {
   }
 }
 
-function renderContent() {
-  cardWrapperType === "fuzzyResultsWrapper" ? generateFuzzyResultsHtml(resultsArray) :
-    cardWrapperType === "exactResultsWrapper" ? generateExactResultHtml(resultsArray) :
-      generateWatchlistHtml(watchlistArray);
-}
 
 function getWatchlistStatus(currentImdbId) {
   return watchlistArray.some(movie => movie.imdbId === currentImdbId);
-}
-
-function resetAll(hasResponse = true) {
-  cardSection.classList.add('space-saver');
-  resultsArray = [];
-  getSpaceSaver(hasResponse);
-}
-
-function getSpaceSaver(hasResponse = true) {
-  console.log(`in getSpaceSaver`);
-
-  if (!hasResponse) {
-    message = `<p>Something went wrong!<br>Please try again.</p>`;
-  }
-
-  else if (cardWrapperType === "fuzzyResultsWrapper" || cardWrapperType === "exactResultsWrapper") {
-    message = `<p>I couldn't find that title.<br>Check your spelling and try again.</p>`;
-  }
-  else {
-    message =
-      `<p>your watchlist is empty.</p>
-				<p>visit the <a href="index.html">search page</a> to find your favorites.</p>`;
-  }
-
-  cardSection.innerHTML =
-    `<div id="results-space-saver">
-      ${message}
-      <i class="fa-solid fa-film"></i>
-    </div>`;
 }
