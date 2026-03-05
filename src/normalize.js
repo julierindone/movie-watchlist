@@ -1,8 +1,7 @@
-export function createMovieObject(movie) {
-
+export function createMovieObject(movie, watchlistStatus) {
 	return {
 		title: movie.Title,
-		imdbId: movie.imdbID,
+		imdbID: movie.imdbID,
 		rating: getRating(movie.Ratings),
 		runtime: movie.Runtime ?? null,
 		year: movie.Year ?? null,
@@ -10,8 +9,7 @@ export function createMovieObject(movie) {
 		plot: movie.Plot ?? null,
 		thumbnail: getThumbnail(movie.Poster) ?? null,
 		alt: `poster for ${movie.Title}`,
-		// Do I add the watchlist status here? Or do i have to check for it elsewhere?
-		// watchlist: getWatchlistStatus(movie.imdbID)
+		watchlist: watchlistStatus
 	};
 }
 

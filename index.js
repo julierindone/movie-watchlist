@@ -1,6 +1,7 @@
 import * as fetch from './src/fetch.js';
 import * as helpers from './src/helpers.js';
 import { createMovieObject } from './src/normalize.js';
+import { onWatchlist } from './src/watchlist.js';
 
 
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
@@ -81,7 +82,7 @@ async function searchMovies() {
   data = fetch.toMovieArray(typeOfSearch, data);
 
   // create normalized array of movies
-  let movies = data.map(createMovieObject);
+  resultsArray = data.map(movie => createMovieObject(movie, onWatchlist(movie.imdbID)));
 }
 
 function handleWatchlistIconClick(currentImdbId) {
@@ -156,9 +157,4 @@ function getSearchType() {
       return type.dataset.searchType;
     }
   }
-}
-
-
-function getWatchlistStatus(currentImdbId) {
-  return watchlistArray.some(movie => movie.imdbId === currentImdbId);
 }
