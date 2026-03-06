@@ -226,6 +226,32 @@ main {
   flex: 2 1 60vh;
 }
 
+.space-saver {
+  /* did this still need flex for the results display? if not, remove. */
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+  color: var(--light-gray);
+  width: 90vw;
+  text-align: center;
+
+  > div {
+    display: flex;
+    flex-flow: column wrap;
+    align-items: center;
+
+  }
+
+  & p {
+    font-size: 1.2rem;
+    text-wrap: balance;
+    line-height: 1.55;
+    width: min(390px, 80%);
+    margin-inline: auto;
+  }
+}
+
 /* =============================
 		ICONS & IMAGES
 	============================== */

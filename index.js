@@ -83,6 +83,10 @@ async function searchMovies() {
 
   // create normalized array of movies
   resultsArray = data.map(movie => createMovieObject(movie, onWatchlist(movie.imdbID)));
+  // create html by type
+  typeOfSearch === "exact"
+    ? generateExactResultHtml(resultsArray)
+    : generateFuzzyResultsHtml(resultsArray)
 }
 
 function handleWatchlistIconClick(currentImdbId) {

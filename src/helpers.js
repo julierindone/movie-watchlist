@@ -17,5 +17,9 @@ export function getSpaceSaver(message = '') {
 			<i class="fa-solid fa-film"></i>
 		</div>`;
 	cardSection.classList.replace('card-section', 'space-saver');
+}
 
+
+export function addSpaceSaverClass() {
+	cardSection.classList.replace('card-section', 'space-saver');
 }

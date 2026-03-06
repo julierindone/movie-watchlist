@@ -4,30 +4,15 @@
 ================================
 ============================== */
 
-.cards-wrapper {
+.card-section {
   background-color: var(--black);
-  flex: 1 1;
-  padding-top: .75em;
+  flex-direction: column;
+  /* flex: 1 1; */
+  padding-top: 1em;
 }
 
-.space-saver {
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: center;
-    align-items: center;
-    color: var(--light-gray);
-    width: 90vw;
-    text-align: center;
-
-    > p {
-      font-size: 1.2rem;
-      text-wrap: balance;
-      line-height: 1.65;
-      width: min(390px, 80%);
-    }
-  }
-
-.cards {
+.cards-wrapper {
+  /* add flex? */
   color: var(--white);
   margin-inline: 0;
   padding-inline: 4.3vw;
@@ -85,7 +70,7 @@ div.movie-details {
       flex: 1 1;
     }
 
-    > .rating {
+    > #rating {
       align-self: center;
       font-size: 1.08em;
       font-weight: 400;
@@ -100,7 +85,6 @@ div.movie-details {
 }
 
 article.movie-card.fuzzy-results {
-
   gap: 0.65em;
 
   > div.movie-details {
@@ -136,7 +120,7 @@ article.movie-card.fuzzy-results {
 	============================== */
 
 .thumbnail {
-  width: max(90px, 11%);
+  width: min(120px, 31%);
   font-size: .8rem;
   object-fit: contain;
   margin-top: 0.3rem;
