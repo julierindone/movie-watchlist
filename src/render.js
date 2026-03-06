@@ -1,3 +1,5 @@
+import { watchlistArray } from '../index.js';
+
 // TODO: A bunch of classes and IDs will need to be changed if the changes i made here survive adding the watchlist,
 // TODO: some css tweaks (huge padding inline!)
 // TODO: .card-section might be better named as .main so it's less confusing.

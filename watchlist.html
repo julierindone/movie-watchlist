@@ -38,7 +38,8 @@
 			</div>
 		</header>
 		<main id="card-section" class="space-saver">
-			<div id="no-result-message">
+			<!-- TODO: needs id change -->
+			<div id="results-space-saver">
 				<p>your watchlist is empty.</p>
 				<p>visit the <a href="index.html">search page</a> to find your favorites.</p>
 				<i class="fa-solid fa-film"></i>
@@ -46,46 +47,4 @@
 		</main>
 	</div>
 	<script src="index.js" type="module"></script>
-	<script>
-		const watchlistCardsWrapper = document.getElementById('watchlist-cards-wrapper');
-		cardWrapperType = "watchlistCardsWrapper";
-
-		generateWatchlistHtml(watchlistArray);
-
-		function generateWatchlistHtml(watchlistArray) {
-			if (watchlistArray.length > 0) {
-				let allMovieCards = `<div id="watchlist-cards-wrapper" class="cards-wrapper cards">`;
-
-				watchlistArray.forEach(movie => {
-					allMovieCards +=
-						`<article class="movie-card fuzzy-results">
-						<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
-						<div class="movie-details">
-							<div class="title-watchlist">
-								<h2>${movie.title}</h2>
-								<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbId}"></i>
-							</div>
-							<p class="year">${movie.year}</p>
-							<details id="more">
-								<summary>more</summary>
-								<div>
-									<p>The other details will go here.</p>
-								</div>
-							</details>
-						</div>
-					</article>
-					<hr class="card-divider">`;
-				});
-
-				allMovieCards += `</div>`;
-
-				cardSection.classList.remove('space-saver');
-				cardSection.innerHTML = allMovieCards;
-			}
-
-			else {
-				resetAll();
-			}
-		}
-	</script>
 </body>

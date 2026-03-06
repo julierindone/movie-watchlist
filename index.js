@@ -1,6 +1,7 @@
 import * as fetch from './src/fetch.js';
 import * as helpers from './src/helpers.js';
 import { createMovieObject } from './src/normalize.js';
+import { generateExactResultHtml, generateFuzzyResultsHtml, generateWatchlistHtml } from './src/render.js';
 import { onWatchlist } from './src/watchlist.js';
 
 
@@ -9,8 +10,10 @@ const searchForm = document.getElementById('search-form');
 const searchBar = document.getElementById('search-bar');
 const cardsWrapperClassQuery = document.querySelectorAll('.cards-wrapper');
 const cardSection = document.getElementById('card-section');
-let watchlistArray = [];
-let cardWrapperType = '';
+export let watchlistArray = []
+export function getWatchlistArray() {
+  return watchlistArray;   // TEST DATA
+}
 export let resultsArray = [];
 export let currentResultIndex = 0;
 
@@ -25,6 +28,11 @@ setWatchlistArray();
 /* ====================================== */
 /* ========== LISTENERS ========== */
 /* ====================================== */
+
+if (document.getElementById('watchlist')) {
+  console.log(getWatchlistArray())
+  generateWatchlistHtml(watchlistArray)
+}
 
 document.addEventListener('click', (event) => {
   if (event.target.id === 'search-bar') {
