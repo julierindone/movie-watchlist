@@ -9,9 +9,14 @@
   --turquoise: hsl(182 97.4% 22.02%);
   --transp-ice-blue: hsl(187, 28%, 49%, 60%);
   --yellow: hsl(52, 100%, 50%);
-  --black-text-shadow: 3px 3px 1px var(--black), 1.15px -1.15px 1px var(--black), -1.15px 1.15px 1px var(--black), -1.15px -1.15px 1px var(--black);
+  --black-text-shadow:
+    3px 3px 1px var(--black),
+    1.15px -1.15px 1px var(--black),
+    -1.15px 1.15px 1px var(--black),
+    -1.15px -1.15px 1px var(--black);
   --gray-border: solid .5px #797979;
   --ice-blue-border: 2px solid var(--ice-blue);
+  --transp-ice-blue-border: 1px solid var(--transp-ice-blue);
 }
 
 /* =============================
@@ -84,25 +89,35 @@ a:visited {
 
 .nav-bar {
   background-color: var(--black);
-  height: 2.15em;
-  font-size: clamp(0.85rem, 0.48rem + 1.77vw, 1rem);
-  border-bottom: 1px var(--transp-ice-blue) solid;
+  height: 2.8em;
+  font-size: clamp(0.8rem, 0.48rem + 1.35vw, 0.95rem);
+  border-bottom: var(--transp-ice-blue-border);
   position: sticky;
   top: 0;
   z-index: 3;
   width: 100%;
+  opacity: .5;
 
-  .nav-wrapper {
+  > .nav-wrapper {
     padding-inline: 4.3vw;
-    gap: 0.85em;
+    gap: 0.8em;
     align-items: center;
     height: 100%;
     justify-content: end;
+
+    > a,
+    a:link {
+      text-transform: lowercase;
+      border-left: var(--transp-ice-blue-border);
+      padding-left: 0.8em;
+      padding-block: 0;
+    }
+
+    > a:first-of-type {
+      border-left-width: 0;
+    }
   }
 
-  a:link {
-    text-transform: lowercase;
-  }
 }
 
 /* =============================
@@ -111,7 +126,7 @@ a:visited {
 
 header {
   background: url("../images/vista_lapl_coll.jpg") no-repeat top / cover;
-  flex: 1 1 11.5rem;
+  flex: 1 1 10.5rem;
   z-index: 0;
   /* margin-top: 3rem; */
 
@@ -123,7 +138,7 @@ header {
     height: 100%;
     backdrop-filter: contrast(.65) blur(1px) brightness(.34);
     padding-inline: 0.8em;
-    padding-bottom: 1.6vh;
+    padding-bottom: 1.4vh;
   }
 }
 
@@ -139,7 +154,7 @@ body#watchlist header {
 form {
   display: flex;
   flex: 1 1;
-  gap: 0.4em;
+  gap: 0.45em;
   flex-flow: column wrap;
   justify-content: flex-end;
   width: 100%;
@@ -154,7 +169,7 @@ form {
   border: var(--ice-blue-border);
   border-radius: 8px;
   padding-inline: 0.5rem 0.2rem;
-  padding-block: .075em;
+  padding-block: .0875em;
 
   &.fancy-focus {
     border: 2px solid var(--ice-blue);
@@ -202,7 +217,7 @@ form {
   gap: 0.4rem;
   flex-wrap: wrap;
   align-items: center;
-  font-size: 0.9rem;
+  font-size: clamp(0.8rem, 0.58rem + 1.12vw, 0.975rem);
   justify-content: start;
   text-transform: lowercase;
 
@@ -222,32 +237,27 @@ form {
     MAIN
 ============================== */
 
-main {
+.main {
   flex: 2 1 60vh;
+  display: flex;
+  flex-flow: column wrap;
+  background-color: var(--black);
+  padding-top: 1em;
 }
 
 .space-saver {
-  /* did this still need flex for the results display? if not, remove. */
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
   color: var(--light-gray);
   width: 90vw;
-  text-align: center;
-
-  > div {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
-
-  }
+  padding-bottom: 4.5vh;
+  justify-content: center;
 
   & p {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 0.3rem + 2.2vw, 1.25rem);
     text-wrap: balance;
     line-height: 1.55;
-    width: min(390px, 80%);
+    width: min(420px, 80%);
+    margin-top: 0.4em;
+    text-align: center;
     margin-inline: auto;
   }
 }
@@ -257,6 +267,8 @@ main {
 	============================== */
 
 .fa-film {
+  display: block;
+  justify-self: center;
   font-size: 2.5em !important;
   margin-top: 1rem;
 }
@@ -273,11 +285,10 @@ main {
 @media (width > 580px) {
 
   header {
-    flex: 0 1 15rem;
+    flex: 0 1 12rem;
 
     > .header-text-wrapper {
       gap: 0.35em;
-      padding-bottom: 1em;
 
       > h1 {
         align-content: center;
@@ -293,12 +304,13 @@ main {
     flex: unset;
     flex-direction: row;
     padding-inline: 1vw;
-    width: min(800px, 94%);
+    /* TODO: set width with a container query. */
+    width: min(780px, 94%);
 
     > #search-bar-wrapper {
       flex: 10 1 150px;
       opacity: 0.75;
-      padding-block: 0.125em;
+      padding-block: 0.135em;
     }
 
     #search-types {

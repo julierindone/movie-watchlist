@@ -4,15 +4,7 @@
 ================================
 ============================== */
 
-.card-section {
-  background-color: var(--black);
-  flex-direction: column;
-  /* flex: 1 1; */
-  padding-top: 1em;
-}
-
-.cards-wrapper {
-  /* add flex? */
+.card-wrapper {
   color: var(--white);
   margin-inline: 0;
   padding-inline: 4.3vw;
@@ -36,7 +28,7 @@
   }
 }
 
-/* convert to grid using media objects guidelines
+/* TODO: convert to grid using media objects guidelines
      https://developer.mozilla.org/en-US/docs/Web/CSS/How_to/Layout_cookbook/Media_objects */
 article.movie-card {
   display: flex;

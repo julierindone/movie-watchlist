@@ -1,25 +1,39 @@
 import { resultsArray, setCurrentResultIndex } from '../index.js';
 
+const main = document.getElementById('main');
+const mainWrapper = document.getElementById('main-wrapper');
+
 export function resetAll() {
-	document.getElementById('card-section').classList.replace('card-section', 'space-saver');
 	resultsArray.length = 0;
 	setCurrentResultIndex();
+	mainWrapper.innerHTML = '';
 }
 
 export function getSpaceSaver(message = '') {
-	const cardSection = document.getElementById('card-section');
-	if (message === '') {
+	toggleMainSection('space-saver');
+
+	if (message === 'False') {
+		message = `<p>I couldn't find that title.<br>Check your spelling and try again.</p>`;
+	}
+
+	else if (message === '') {
 		message = `<p>Something went wrong!<br>Please try again.</p>`;
 	}
-	cardSection.innerHTML =
-		`<div id="results-space-saver">
-			${message}
+
+	main.innerHTML =
+		`<div id="main-wrapper">
+			<p>${message}</p>
 			<i class="fa-solid fa-film"></i>
 		</div>`;
-	cardSection.classList.replace('card-section', 'space-saver');
 }
 
-
-export function addSpaceSaverClass() {
-	cardSection.classList.replace('card-section', 'space-saver');
+export function toggleMainSection(goal) {
+	if (goal === 'space-saver') {
+		main.classList.add('space-saver');
+		mainWrapper.classList.remove('card-wrapper');
+	}
+	else {
+		main.classList.remove('space-saver');
+		mainWrapper.classList.add('card-wrapper');
+	}
 }

@@ -1,17 +1,11 @@
-import { watchlistArray } from '../index.js';
+import { toggleMainSection, resetAll } from './helpers.js';
 
-// TODO: A bunch of classes and IDs will need to be changed if the changes i made here survive adding the watchlist,
-// TODO: some css tweaks (huge padding inline!)
-// TODO: .card-section might be better named as .main so it's less confusing.
-// TODO: watchlist html generator will also need to be updated.
-
-const cardSection = document.getElementById('card-section');
-// TODO id needs to be changed
-const cardsWrapper = document.getElementById('results-space-saver');
+const main = document.getElementById('main');
+const mainWrapper = document.getElementById('main-wrapper');
 let fuzzyCardsHTML = '';
 
+// TODO: MOVE DOM stuff into separate function (maybe)
 export function generateExactResultHtml(resultsArray) {
-	cardsWrapper.classList.add('cards-wrapper');
 	let movie = resultsArray[0];
 	let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 
@@ -36,9 +30,10 @@ export function generateExactResultHtml(resultsArray) {
 		</article>
 		<hr class="card-divider">`;
 
-	cardsWrapper.innerHTML = allMovieCards;
+	toggleMainSection('card-wrapper');
+	mainWrapper.innerHTML = '';
+	mainWrapper.innerHTML = allMovieCards;
 	generateRatingHtml(movie.rating);
-	toggleCardSectionClasses('card-section');
 }
 
 export function generateFuzzyResultsHtml(resultsArray) {
@@ -65,9 +60,45 @@ export function generateFuzzyResultsHtml(resultsArray) {
 			<hr class="card-divider">`;
 	};
 
-	toggleCardSectionClasses('card-section');
-	cardsWrapper.classList.add('cards-wrapper');
-	cardsWrapper.innerHTML = fuzzyCardsHTML;
+	toggleMainSection('card-wrapper');
+	mainWrapper.innerHTML = '';
+	mainWrapper.innerHTML = fuzzyCardsHTML;
+}
+
+export function generateWatchlistHtml(watchlistArray) {
+
+	if (watchlistArray.length > 0) {
+		let watchlistHtml = ``;
+
+		watchlistArray.forEach(movie => {
+			watchlistHtml +=
+				`<article class="movie-card fuzzy-results">
+					<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
+					<div class="movie-details">
+						<div class="title-watchlist">
+							<h2>${movie.title}</h2>
+							<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbId}"></i>
+						</div>
+						<p class="year">${movie.year}</p>
+						<details id="more">
+							<summary>more</summary>
+							<div>
+								<p>The other details will go here.</p>
+							</div>
+						</details>
+					</div>
+				</article>
+				<hr class="card-divider">`;
+		});
+
+		toggleMainSection('card-wrapper');
+		mainWrapper.innerHTML = '';
+		mainWrapper.innerHTML = watchlistHtml;
+	}
+
+	else {
+		resetAll();
+	}
 }
 
 export function showNextChunk() {
@@ -83,24 +114,10 @@ export function showNextChunk() {
 	return resultsToAdd;
 };
 
-function toggleCardSectionClasses(newClass) {
-	if (newClass === 'card-section') {
-		cardSection.classList.replace('space-saver', 'card-section');
-	}
-	else {
-		cardSection.classList.replace('card-section', 'space-saver');
-	}
-}
-
 function generateRatingHtml(rating) {
 	if (rating) {
 		document.getElementById('rating').innerHTML =
 			`<i class="fa-solid fa-star"></i>
 		${rating}`;
-	}
-
-	function resetCardSection() {
-		cardSection.innerHTML = '';
-		toggleCardSectionClasses('space-saver');
 	}
 }
