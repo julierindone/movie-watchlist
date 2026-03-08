@@ -66,7 +66,6 @@ export function generateFuzzyResultsHtml(resultsArray) {
 }
 
 export function generateWatchlistHtml(watchlistArray) {
-
 	if (watchlistArray.length > 0) {
 		let watchlistHtml = ``;
 

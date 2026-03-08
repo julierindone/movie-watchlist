@@ -13,11 +13,16 @@ export function getSpaceSaver(message = '') {
 	toggleMainSection('space-saver');
 
 	if (message === 'False') {
-		message = `<p>I couldn't find that title.<br>Check your spelling and try again.</p>`;
+		message = `I couldn't find that title.<br>Check your spelling and try again.`;
+	}
+
+	else if (message === 'watchlist') {
+		message = `your watchlist is empty.</p>
+		<p>visit the <a href="index.html">search page</a> to find your favorites.`;
 	}
 
 	else if (message === '') {
-		message = `<p>Something went wrong!<br>Please try again.</p>`;
+		message = `Something went wrong!<br>Please try again.`;
 	}
 
 	main.innerHTML =

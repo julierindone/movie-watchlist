@@ -2,35 +2,32 @@ import * as fetch from './src/fetch.js';
 import * as helpers from './src/helpers.js';
 import { createMovieObject } from './src/normalize.js';
 import { generateExactResultHtml, generateFuzzyResultsHtml, generateWatchlistHtml } from './src/render.js';
-import { onWatchlist, getLocalStorageWatchlist } from './src/watchlist.js';
+import { watchlistArray, onWatchlist, initLocalStorageWatchlist } from './src/watchlist.js';
 
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
 const searchForm = document.getElementById('search-form');
 const searchBar = document.getElementById('search-bar');
 
-// THINK: Would it be better to store watchlistArray in watchlist.js?
-export let watchlistArray = [];
-export function getWatchlistArray() {
-  watchlistArray = getLocalStorageWatchlist();   // TEST DATA
-}
 export let resultsArray = [];
 export let currentResultIndex = 0;
-
 export function setCurrentResultIndex(lastIndex) {
   currentResultIndex = lastIndex;
 }
 
-// TODO: Add check to see if watchlist exists in localStorage and create it if it doesn't
-// checkWatchlistArray();
-
-watchlistArray = getLocalStorageWatchlist();
+// Check to see if watchlist exists in localStorage and create if it doesn't
+initLocalStorageWatchlist();
 
 /* ====================================== */
 /* ========== LISTENERS ========== */
 /* ====================================== */
 
 if (document.getElementById('watchlist')) {
-  generateWatchlistHtml(watchlistArray);
+  if (watchlistArray.length > 0) {
+    generateWatchlistHtml(watchlistArray);
+  }
+  else {
+    helpers.getSpaceSaver('watchlist');
+  }
 }
 
 document.addEventListener('click', (event) => {
