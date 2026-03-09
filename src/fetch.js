@@ -24,7 +24,7 @@ export async function fetchFuzzy(query) {
 	}
 }
 
-export function isSuccessfulResponse(data) {
+function isSuccessfulResponse(data) {
 	return data.Response === "True";
 }
 

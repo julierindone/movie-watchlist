@@ -1,4 +1,5 @@
-import { resultsArray, setCurrentResultIndex } from '../index.js';
+import { setCurrentResultIndex } from '../index.js';
+import { resultsArray } from './search.js'
 
 const main = document.getElementById('main');
 const mainWrapper = document.getElementById('main-wrapper');
