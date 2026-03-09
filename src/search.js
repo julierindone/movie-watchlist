@@ -4,9 +4,6 @@ import * as helpers from './helpers.js';
 import { onWatchlist } from './watchlist.js';
 import { generateExactResultHtml, generateFuzzyResultsHtml } from './render.js';
 
-
-const searchBarWrapper = document.getElementById('search-bar-wrapper');
-const searchForm = document.getElementById('search-form');
 const searchBar = document.getElementById('search-bar');
 
 export let resultsArray = [];

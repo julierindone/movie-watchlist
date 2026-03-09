@@ -1,9 +1,11 @@
 import { toggleMainSection, resetAll } from './helpers.js';
+import { watchlistArray } from './watchlist.js';
+import { resultsArray } from './search.js';
 
 const mainWrapper = document.getElementById('main-wrapper');
 
 // TODO: MOVE DOM stuff into separate function (maybe)
-export function generateExactResultHtml(resultsArray) {
+export function generateExactResultHtml() {
 	let movie = resultsArray[0];
 	let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 
@@ -34,7 +36,7 @@ export function generateExactResultHtml(resultsArray) {
 	generateRatingHtml(movie.rating);
 }
 
-export function generateFuzzyResultsHtml(resultsArray) {
+export function generateFuzzyResultsHtml() {
 	let fuzzyCardsHTML = '';
 	for (let movie of resultsArray) {
 		let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
@@ -63,7 +65,7 @@ export function generateFuzzyResultsHtml(resultsArray) {
 	mainWrapper.innerHTML = fuzzyCardsHTML;
 }
 
-export function generateWatchlistHtml(watchlistArray) {
+export function generateWatchlistHtml() {
 	if (watchlistArray.length > 0) {
 		let watchlistHtml = ``;
 
@@ -98,7 +100,7 @@ export function generateWatchlistHtml(watchlistArray) {
 	}
 }
 
-export function showNextChunk() {
+function showNextChunk() {
 	const chunkSize = 3;
 	const resultsToAdd = resultsArray.slice(currentResultIndex, currentResultIndex + chunkSize);
 	currentResultIndex += chunkSize;
@@ -120,8 +122,8 @@ function generateRatingHtml(rating) {
 }
 
 // render content based on type of list
-export function renderHtml(resultsArray, watchlistArray) {
-	mainWrapper.classList.contains('fuzzy') ? generateFuzzyResultsHtml(resultsArray)
-		: mainWrapper.classList.contains('exact') ? generateExactResultHtml(resultsArray)
-			: generateWatchlistHtml(watchlistArray);
+export function renderHtml() {
+	mainWrapper.classList.contains('fuzzy') ? generateFuzzyResultsHtml()
+		: mainWrapper.classList.contains('exact') ? generateExactResultHtml()
+			: generateWatchlistHtml();
 }
