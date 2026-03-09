@@ -1,8 +1,6 @@
 import { toggleMainSection, resetAll } from './helpers.js';
 
-const main = document.getElementById('main');
 const mainWrapper = document.getElementById('main-wrapper');
-let fuzzyCardsHTML = '';
 
 // TODO: MOVE DOM stuff into separate function (maybe)
 export function generateExactResultHtml(resultsArray) {
@@ -31,7 +29,7 @@ export function generateExactResultHtml(resultsArray) {
 		<hr class="card-divider">`;
 
 	toggleMainSection('card-wrapper');
-	mainWrapper.innerHTML = '';
+	mainWrapper.classList.add('exact');
 	mainWrapper.innerHTML = allMovieCards;
 	generateRatingHtml(movie.rating);
 }
@@ -61,7 +59,7 @@ export function generateFuzzyResultsHtml(resultsArray) {
 	};
 
 	toggleMainSection('card-wrapper');
-	mainWrapper.innerHTML = '';
+	mainWrapper.classList.add('fuzzy');
 	mainWrapper.innerHTML = fuzzyCardsHTML;
 }
 
@@ -76,7 +74,7 @@ export function generateWatchlistHtml(watchlistArray) {
 					<div class="movie-details">
 						<div class="title-watchlist">
 							<h2>${movie.title}</h2>
-							<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbId}"></i>
+							<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbID}"></i>
 						</div>
 						<p class="year">${movie.year}</p>
 						<details id="more">
@@ -91,7 +89,7 @@ export function generateWatchlistHtml(watchlistArray) {
 		});
 
 		toggleMainSection('card-wrapper');
-		mainWrapper.innerHTML = '';
+		mainWrapper.classList.add('watchlist');
 		mainWrapper.innerHTML = watchlistHtml;
 	}
 
@@ -119,4 +117,11 @@ function generateRatingHtml(rating) {
 			`<i class="fa-solid fa-star"></i>
 		${rating}`;
 	}
+}
+
+// render content based on type of list
+export function renderHtml(resultsArray, watchlistArray) {
+	mainWrapper.classList.contains('fuzzy') ? generateFuzzyResultsHtml(resultsArray)
+		: mainWrapper.classList.contains('exact') ? generateExactResultHtml(resultsArray)
+			: generateWatchlistHtml(watchlistArray);
 }

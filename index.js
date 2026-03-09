@@ -2,7 +2,7 @@ import * as fetch from './src/fetch.js';
 import * as helpers from './src/helpers.js';
 import { createMovieObject } from './src/normalize.js';
 import { generateExactResultHtml, generateFuzzyResultsHtml, generateWatchlistHtml } from './src/render.js';
-import { watchlistArray, onWatchlist, initLocalStorageWatchlist } from './src/watchlist.js';
+import { onWatchlist, initLocalStorageWatchlist, handleWatchlistIconClick, watchlistArray } from './src/watchlist.js';
 
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
 const searchForm = document.getElementById('search-form');
@@ -21,7 +21,7 @@ initLocalStorageWatchlist();
 /* ========== LISTENERS ========== */
 /* ====================================== */
 
-if (document.getElementById('watchlist')) {
+if (document.getElementById('watchlist-page')) {
   if (watchlistArray.length > 0) {
     generateWatchlistHtml(watchlistArray);
   }
@@ -34,8 +34,8 @@ document.addEventListener('click', (event) => {
   if (event.target.id === 'search-bar') {
     searchBarWrapper.classList.toggle('fancy-focus');
   }
-  else if (event.target.dataset.imdbID) {
-    handleWatchlistIconClick(event.target.dataset.imdbID);
+  else if (event.target.dataset.imdbId) {
+    handleWatchlistIconClick(event.target.dataset.imdbId);
   }
   else if (event.target.id === 'more-results-btn') {
     // generateFuzzyResultsHtml();

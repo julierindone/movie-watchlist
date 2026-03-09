@@ -33,12 +33,13 @@ export function getSpaceSaver(message = '') {
 }
 
 export function toggleMainSection(goal) {
+	const listTypes = ['fuzzy', 'exact', 'watchlist'];
 	if (goal === 'space-saver') {
-		main.classList.add('space-saver');
-		mainWrapper.classList.remove('card-wrapper');
+		mainWrapper.classList.remove(['card-wrapper', ...listTypes]);
 	}
 	else {
 		main.classList.remove('space-saver');
 		mainWrapper.classList.add('card-wrapper');
+		mainWrapper.classList.remove(...listTypes);
 	}
 }
