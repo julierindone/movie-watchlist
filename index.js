@@ -39,12 +39,13 @@ document.addEventListener('click', (event) => {
     if (event.target.classList.contains('fa-solid')) {
       handleWatchlistIconClick(event.target.dataset.imdbId);
     }
+    // // should this be async?
     else if (event.target.classList.contains('details-summary')) {
       handleMoreDetailsClick(event.target);
     }
   }
-  else if (event.target.id === 'less-details') {
-    handleLessDetailsClick();
+  else if (event.target.classList.contains('less-details')) {
+    handleLessDetailsClick(event.target);
   }
   else {
     return;

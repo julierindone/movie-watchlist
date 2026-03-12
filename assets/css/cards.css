@@ -81,6 +81,7 @@ div.movie-details {
     flex: 4 1;
     margin-top: 0.5em;
     font-size: 0.95em;
+    line-height: 1.4;
   }
 }
 
@@ -88,7 +89,7 @@ div.movie-details {
   margin-top: 0.2em;
 
   > .details-summary,
-  button#less-details {
+  .less-details {
     list-style: none;
     font-size: 0.95em;
     color: var(--ice-blue-links);
@@ -102,10 +103,11 @@ div.movie-details {
   > div.details-div {
     font-size: 1em;
 
-    > button#less-details {
+    .less-details {
       background-color: #00000000;
       border-width: 0;
       padding-left: 0;
+      margin-top: 0.5em;
     }
 
     .no-details-error {
@@ -161,24 +163,12 @@ article.movie-card.fuzzy-results {
 	============================== */
 
 @media (width > 580px) {
-
-  /*
-  main {
-    padding-inline: 5vw;
-  } */
-
   hr.card-divider {
     width: 40%;
   }
 
   article.movie-card {
     gap: 1.3em;
-  }
-
-  div.movie-details {
-    > p.plot {
-      font-size: 0.95rem;
-    }
   }
 
   article.movie-card.fuzzy-results {

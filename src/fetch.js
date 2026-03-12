@@ -26,7 +26,7 @@ export async function fetchFuzzy(query) {
 }
 
 export async function fetchDetails(detailsSummary, imdbID) {
-	let url = `fgsdfhttps://omdbapi.com/?i=${imdbID}&apikey=aad30e17`;
+	let url = `https://omdbapi.com/?i=${imdbID}&apikey=aad30e17`;
 
 	try {
 		const response = await fetch(url);

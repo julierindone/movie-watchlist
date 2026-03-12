@@ -49,10 +49,8 @@ export function generateFuzzyResultsHtml() {
 					</div>
 					<p class="year">${movie.year}</p>
 					<details class="more-details">
-						<summary class="details-summary">more</summary>
-						<div>
-							<p>The other details will go here.</p>
-						</div>
+						<summary class="details-summary" data-imdb-id="${movie.imdbID}">more</summary>
+						<div class="details-div"></div>
 					</details>
 				</div>
 			</article>
@@ -136,7 +134,7 @@ export function generateMoreDetails(detailsSummary, movieDetails) {
 			<p id="rating"></p>
 		</div>
 		<p class="plot">${movieDetails.plot}</p>
-		<button id="less-details">less</button>
+		<button class="less-details">less</button>
 		`;
 
 	detailsSummary.nextElementSibling.innerHTML = detailsHTML;

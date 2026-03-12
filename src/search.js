@@ -52,28 +52,27 @@ export function handleImageError(brokenImage) {
 	brokenImage.alt = 'film poster not found';
 }
 
-// TODO: Should go elsewhere since it's used on both search and watchlist pages!
+// TODO: Refactor to use details tag
 export async function handleMoreDetailsClick(eTarget) {
 	let detailsSummary = eTarget;
 	const imdbID = detailsSummary.attributes[1].value;
 
 	let data = await fetch.fetchDetails(detailsSummary, imdbID);
-
-	// validate data
 	if (data.Response === "False") {
 		console.error("Response was false.");
 		return;
 	}
 
 	movieDetails = createMovieObject(data);
-
-	// Generate html
 	generateMoreDetails(detailsSummary, movieDetails);
 }
 
-export async function handleLessDetailsClick() {
-	const detailsDiv = document.getElementById('less-details').closest('.details-div');
-	detailsDiv.style.display = 'none';
-	console.log();
+export async function handleLessDetailsClick(eTarget) {
+	const details = eTarget.closest('details');
 
+	if (details) {
+		const summary = details.querySelector('summary');
+		details.removeAttribute('open');
+		summary.style.display = 'unset';
+	}
 }
