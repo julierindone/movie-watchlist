@@ -10,23 +10,22 @@ export function generateExactResultHtml() {
 	let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 
 	let allMovieCards =
-		`<article class="movie-card">
+	`<article class="movie-card" data-imdb-id="${movie.imdbID}">
 		<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
-			<div class="movie-details">
-				<div class="title-watchlist">
-					<h2>${movie.title}</h2>
-					<i class="fa-solid fa-circle-${watchlistIcon}" data-imdb-id="${movie.imdbID}"></i>
-				</div>
-				<div class="runtime-year-genre-rating">
-					<div class="runtime-year-genre">
-						<p>${movie.year}&ensp;${movie.runtime}</p>
-						<p class="genre">${movie.genre}</p>
-					</div>
-					<p id="rating">
-					</p>
-				</div>
-				<p class="plot">${movie.plot}</p>
+		<div class="movie-details">
+			<div class="title-watchlist">
+				<h2>${movie.title}</h2>
+				<i class="fa-solid fa-circle-${watchlistIcon}" data-imdb-id="${movie.imdbID}"></i>
 			</div>
+			<div class="runtime-year-genre-rating">
+				<div class="runtime-year-genre">
+					<p>${movie.year}&ensp;${movie.runtime}</p>
+					<p class="genre">${movie.genre}</p>
+				</div>
+				<p id="rating"></p>
+			</div>
+			<p class="plot">${movie.plot}</p>
+		</div>
 		</article>
 		<hr class="card-divider">`;
 
@@ -41,7 +40,7 @@ export function generateFuzzyResultsHtml() {
 	for (let movie of resultsArray) {
 		let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 		fuzzyCardsHTML +=
-			`<article class="movie-card fuzzy-results">
+			`<article class="movie-card fuzzy-results" data-imdb-id="${movie.imdbID}">
 				<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
 				<div class="movie-details">
 					<div class="title-watchlist">
@@ -49,8 +48,8 @@ export function generateFuzzyResultsHtml() {
 						<i class="fa-solid fa-circle-${watchlistIcon}" data-imdb-id="${movie.imdbID}"></i>
 					</div>
 					<p class="year">${movie.year}</p>
-					<details id="more">
-						<summary>more</summary>
+					<details class="more-details">
+						<summary class="details-summary">more</summary>
 						<div>
 							<p>The other details will go here.</p>
 						</div>
@@ -71,7 +70,7 @@ export function generateWatchlistHtml() {
 
 		watchlistArray.forEach(movie => {
 			watchlistHtml +=
-				`<article class="movie-card fuzzy-results">
+				`<article class="movie-card">
 					<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
 					<div class="movie-details">
 						<div class="title-watchlist">
@@ -79,11 +78,9 @@ export function generateWatchlistHtml() {
 							<i class="fa-solid fa-circle-check" data-imdb-id="${movie.imdbID}"></i>
 						</div>
 						<p class="year">${movie.year}</p>
-						<details id="more">
-							<summary>more</summary>
-							<div>
-								<p>The other details will go here.</p>
-							</div>
+					<details class="more-details">
+						<summary class="details-summary" data-imdb-id="${movie.imdbID}">more</summary>
+							<div class="details-div"></div>
 						</details>
 					</div>
 				</article>
@@ -126,4 +123,26 @@ export function renderHtml() {
 	mainWrapper.classList.contains('fuzzy') ? generateFuzzyResultsHtml()
 		: mainWrapper.classList.contains('exact') ? generateExactResultHtml()
 			: generateWatchlistHtml();
+}
+
+export function generateMoreDetails(detailsSummary, movieDetails) {
+	detailsSummary.style.display = 'none';
+	let detailsHTML = `
+		<div class="runtime-year-genre-rating">
+			<div class="runtime-year-genre">
+					<p>${movieDetails.runtime}</p>
+					<p class="genre">${movieDetails.genre}</p>
+			</div>
+			<p id="rating"></p>
+		</div>
+		<p class="plot">${movieDetails.plot}</p>
+		<button id="less-details">less</button>
+		`;
+
+	detailsSummary.nextElementSibling.innerHTML = detailsHTML;
+	generateRatingHtml(movieDetails.rating);
+}
+
+export function generateMoreDetailsError(detailsSummary) {
+	detailsSummary.nextElementSibling.innerHTML = '<p class="no-details-error">No further details were found.</p>';
 }

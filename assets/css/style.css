@@ -1,9 +1,10 @@
 :root {
   --white: hsl(0deg 0% 90.68%);
-  --gray: hsl(0, 0%, 10.3%);
+  --gray: hsl(0, 0%, 7.5%);
   --medium-gray: hsl(0, 0%, 14%);
   --light-gray: hsl(0, 0%, 52%);
   --black: #101010;
+  --ice-blue-links: hsl(187 36.15% 67.66%);
   --light-ice-blue: hsl(182 29.15% 62.66%);
   --ice-blue: hsl(182 32% 43%);
   --turquoise: hsl(182 97.4% 22.02%);
@@ -50,23 +51,25 @@ button {
 }
 
 h1 {
-  flex: 2 1;
-  align-content: center;
+  /* flex: 2 1; */
+  /* align-content: center; */
+  align-self: center;
   font-family: "Limelight", sans-serif;
-  font-size: clamp(2rem, 0.6rem + 11vw, 5.3rem);
+  font-size: clamp(2rem, 0.5rem + 8.5vw, 3rem);
   text-align: center;
   text-transform: uppercase;
   text-shadow: var(--black-text-shadow);
-  letter-spacing: 0.015em;
+  letter-spacing: 0.07em;
   word-spacing: .06em;
   opacity: 0.85;
   padding-top: 1.4vh;
 }
 
 h2 {
-  font-size: 1.2em;
+  font-size: clamp(1rem, 0.2rem + 2.25vw, 1.1rem);
   font-weight: 500;
   text-wrap: wrap;
+  line-height: 1.5;
 }
 
 p,
@@ -89,14 +92,14 @@ a:visited {
 
 .nav-bar {
   background-color: var(--black);
-  height: 2.8em;
+  height: 2.4em;
   font-size: clamp(0.8rem, 0.48rem + 1.35vw, 0.95rem);
   border-bottom: var(--transp-ice-blue-border);
   position: sticky;
   top: 0;
   z-index: 3;
   width: 100%;
-  opacity: .5;
+  opacity: .75;
 
   > .nav-wrapper {
     padding-inline: 4.3vw;
@@ -126,37 +129,43 @@ a:visited {
 
 header {
   background: url("../images/vista_lapl_coll.jpg") no-repeat top / cover;
-  flex: 1 1 10.5rem;
+  height: max(150px, 19vh);
   z-index: 0;
-  /* margin-top: 3rem; */
 
   > .header-text-wrapper {
-    display: flex;
-    flex-flow: column wrap;
-    align-items: center;
+    display: grid;
+    /* NOTE: The 60% is causing the form to get messed up on smallest phone sizes */
+    grid-template-rows: auto 68px;
     border-bottom: 1px var(--transp-ice-blue) solid;
     height: 100%;
     backdrop-filter: contrast(.65) blur(1px) brightness(.34);
     padding-inline: 0.8em;
-    padding-bottom: 1.4vh;
+    padding-bottom: min(1.2vh, 1rem);
   }
 }
 
-/* These will probably get deleted once I add a search or other on the watchlist page */
-body#watchlist header {
-  flex: 1 1 9.5rem;
+#watchlist-page {
+  header {
+    height: 18vh;
 
-  > .header-text-wrapper {
-    padding-block: 0.5rem;
+    > .header-text-wrapper {
+      grid-template-rows: unset;
+      padding-bottom: 0;
+    }
+
+    > h1 {
+      letter-spacing: 0.09em;
+    }
   }
 }
 
 form {
   display: flex;
-  flex: 1 1;
+  /* flex: 1 1; */
   gap: 0.45em;
   flex-flow: column wrap;
-  justify-content: flex-end;
+  align-self: end;
+  justify-self: center;
   width: 100%;
   padding-inline: 5vw;
 }
@@ -217,7 +226,7 @@ form {
   gap: 0.4rem;
   flex-wrap: wrap;
   align-items: center;
-  font-size: clamp(0.8rem, 0.58rem + 1.12vw, 0.975rem);
+  font-size: clamp(0.75rem, 0.53rem + 1vw, 0.9rem);
   justify-content: start;
   text-transform: lowercase;
 
@@ -252,7 +261,7 @@ form {
   justify-content: center;
 
   & p {
-    font-size: clamp(1rem, 0.3rem + 2.2vw, 1.25rem);
+    font-size: clamp(1rem, 0.35rem + 1.7vw, 1.2rem);
     text-wrap: balance;
     line-height: 1.55;
     width: min(420px, 80%);
@@ -285,13 +294,14 @@ form {
 @media (width > 580px) {
 
   header {
-    flex: 0 1 12rem;
+    height: max(180px, 16vh);
 
     > .header-text-wrapper {
-      gap: 0.35em;
+      grid-template-rows: auto 38px;
+      padding-bottom: 1.5vh;
 
       > h1 {
-        align-content: center;
+        font-size: clamp(3.3rem, 8.4vw, 4.6rem);
       }
     }
   }
@@ -321,6 +331,6 @@ form {
   }
 
   main {
-    padding-inline: 5vw;
+    padding-inline: 3vw;
   }
 }

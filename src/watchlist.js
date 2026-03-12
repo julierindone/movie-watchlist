@@ -1,5 +1,4 @@
 import { resultsArray } from "./search.js";
-// import { generateWatchlistHtml, generateExactResultHtml, generateFuzzyResultsHtml } from "./render.js";
 import { renderHtml } from "./render.js";
 
 export let watchlistArray = [];

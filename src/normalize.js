@@ -20,4 +20,3 @@ function getThumbnail(poster) {
 function getRating(ratingsArray) {
 	return (ratingsArray && ratingsArray[1]) ? ratingsArray[1].Value : null
 }
-

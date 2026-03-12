@@ -1,6 +1,6 @@
 import * as helpers from './src/helpers.js';
 import { generateWatchlistHtml } from './src/render.js';
-import { searchMovies, handleImageError } from './src/search.js';
+import { searchMovies, handleImageError, handleMoreDetailsClick, handleLessDetailsClick } from './src/search.js';
 import { initLocalStorageWatchlist, handleWatchlistIconClick, watchlistArray } from './src/watchlist.js';
 
 const searchBarWrapper = document.getElementById('search-bar-wrapper');
@@ -32,11 +32,19 @@ document.addEventListener('click', (event) => {
   if (event.target.id === 'search-bar') {
     searchBarWrapper.classList.toggle('fancy-focus');
   }
-  else if (event.target.dataset.imdbId) {
-    handleWatchlistIconClick(event.target.dataset.imdbId);
-  }
   else if (event.target.id === 'more-results-btn') {
     // generateFuzzyResultsHtml();
+  }
+  else if (event.target.dataset.imdbId) {
+    if (event.target.classList.contains('fa-solid')) {
+      handleWatchlistIconClick(event.target.dataset.imdbId);
+    }
+    else if (event.target.classList.contains('details-summary')) {
+      handleMoreDetailsClick(event.target);
+    }
+  }
+  else if (event.target.id === 'less-details') {
+    handleLessDetailsClick();
   }
   else {
     return;
