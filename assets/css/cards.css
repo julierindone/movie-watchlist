@@ -24,7 +24,7 @@
   }
 
   hr:last-of-type {
-    display: none;
+    margin-bottom: 3em;
   }
 }
 
@@ -34,16 +34,15 @@ article.movie-card {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
-  gap: 0.85em;
+  gap: 0.95em;
   padding-block: 0.65rem;
-  margin-block: 0.8rem;
+  margin-block: 1rem;
 }
 
 div.movie-details {
   flex: 1 1;
   display: flex;
   flex-direction: column;
-  gap: 0.35em;
   font-size: clamp(0.9rem, 0.78rem + 0.5vw, 1rem);
   margin-top: 0.1em;
 
@@ -53,15 +52,12 @@ div.movie-details {
     gap: 0.75em;
   }
 
-  > .year {
-    margin-top: -0.6em;
-  }
-
   & .runtime-year-genre-rating {
-    font-size: 0.95em;
+    font-size: 0.92em;
     display: flex;
     gap: 0.05em;
     justify-content: space-between;
+    margin-top: 0.1em;
 
     > .runtime-year-genre {
       display: flex;
@@ -71,17 +67,17 @@ div.movie-details {
     }
 
     > #rating {
-      align-self: flex-start;
-      font-size: 1.08em;
+      align-self: center;
+      font-size: 1.02em;
       font-weight: 400;
     }
   }
 
   & p.plot {
     flex: 4 1;
-    margin-top: 0.5em;
-    font-size: 0.95em;
-    line-height: 1.4;
+    margin-top: 0.6em;
+    font-size: 0.98em;
+    line-height: 1.45;
   }
 }
 
@@ -93,6 +89,7 @@ div.movie-details {
     list-style: none;
     font-size: 0.95em;
     color: var(--ice-blue-links);
+    margin-top: 0.2em;
 
     &:hover {
       font-style: italic;
@@ -153,7 +150,7 @@ article.movie-card.fuzzy-results {
 }
 
 .fa-star {
-  font-size: .85em;
+  font-size: .8em;
   margin-right: 0.36em;
   color: var(--yellow);
 }

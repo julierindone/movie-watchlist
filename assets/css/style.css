@@ -66,10 +66,10 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(1rem, 0.2rem + 2.25vw, 1.1rem);
-  font-weight: 500;
-  text-wrap: wrap;
-  line-height: 1.5;
+	font-size: clamp(1rem, 0.62rem + 1.5vw, 1.15rem);
+	font-weight: 500;
+	text-wrap: wrap;
+	margin-bottom: 0.2em;
 }
 
 p,
@@ -146,7 +146,7 @@ header {
 
 #watchlist-page {
   header {
-    height: 18vh;
+  height: max(100px, 13.5vh);
 
     > .header-text-wrapper {
       grid-template-rows: unset;
