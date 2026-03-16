@@ -51,11 +51,9 @@ button {
 }
 
 h1 {
-  /* flex: 2 1; */
-  /* align-content: center; */
   align-self: center;
   font-family: "Limelight", sans-serif;
-  font-size: clamp(2rem, 0.5rem + 8.5vw, 3rem);
+	font-size: clamp(1.5rem, 0.5rem + 8.5vw, 3.3rem);
   text-align: center;
   text-transform: uppercase;
   text-shadow: var(--black-text-shadow);
@@ -161,7 +159,6 @@ header {
 
 form {
   display: flex;
-  /* flex: 1 1; */
   gap: 0.45em;
   flex-flow: column wrap;
   align-self: end;
@@ -233,7 +230,6 @@ form {
   > .type-choice {
     display: flex;
     flex-wrap: nowrap;
-    /* gap: 0.25em; */
   }
 
   & label {

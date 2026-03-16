@@ -80,7 +80,6 @@ function removeFromWatchlist(movie) {
 function addToWatchList(movie) {
 	// change watchlist status in object in resultsArray
 	if (document.getElementById('search-page')) {
-		console.log(`on search page`);
 		let resultsIndex = getResultsIndex(movie.imdbID);
 		resultsArray[resultsIndex].watchlist = true;
 	};
@@ -122,6 +121,5 @@ async function processWatchlistAdd(movie) {
 		console.error("Response was false.");
 		return;
 	}
-	console.log(`response was true. adding movie to watchlist.`);
 	return createMovieObject(data);
 }
