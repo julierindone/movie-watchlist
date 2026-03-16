@@ -1,5 +1,5 @@
 import { getSpaceSaver } from "./helpers.js";
-import { generateMoreDetailsError } from './render.js'
+import { generateMoreDetailsError } from './render.js';
 
 export async function fetchExact(query) {
 	let url = `https://omdbapi.com/?t=${query}&apikey=aad30e17`;
@@ -25,7 +25,7 @@ export async function fetchFuzzy(query) {
 	}
 }
 
-export async function fetchDetails(detailsSummary, imdbID) {
+export async function fetchFromImdbId(imdbID, detailsSummary = null) {
 	let url = `https://omdbapi.com/?i=${imdbID}&apikey=aad30e17`;
 
 	try {
@@ -33,13 +33,12 @@ export async function fetchDetails(detailsSummary, imdbID) {
 		return response.json();
 	}
 	catch (error) {
-		generateMoreDetailsError(detailsSummary)
+		// not using for watchlist-related use, but i think the param is needed for the error message I'll be adding back in.
+		if (detailsSummary !== null) {
+			generateMoreDetailsError(detailsSummary);
+		}
 		console.error(error);
 	}
-}
-
-function isSuccessfulResponse(data) {
-	return data.Response === "True";
 }
 
 export function toMovieArray(typeOfSearch, data) {

@@ -15,10 +15,6 @@ export function setCurrentResultIndex(lastIndex) {
 // Check to see if watchlist exists in localStorage and create if it doesn't
 initLocalStorageWatchlist();
 
-/* ====================================== */
-/* ========== LISTENERS ========== */
-/* ====================================== */
-
 if (document.getElementById('watchlist-page')) {
   if (watchlistArray.length > 0) {
     generateWatchlistHtml();
@@ -28,18 +24,25 @@ if (document.getElementById('watchlist-page')) {
   }
 }
 
+/* ====================================== */
+/* ========== LISTENERS ========== */
+/* ====================================== */
+
 document.addEventListener('click', (event) => {
   if (event.target.id === 'search-bar') {
     searchBarWrapper.classList.toggle('fancy-focus');
   }
+
+  // NOT IN USE; WILL NEED WHEN LIMITING RESULTS TO 5.
   else if (event.target.id === 'more-results-btn') {
     // generateFuzzyResultsHtml();
   }
+  // ADD TO WATCHLIST
   else if (event.target.dataset.imdbId) {
     if (event.target.classList.contains('fa-solid')) {
       handleWatchlistIconClick(event.target.dataset.imdbId);
     }
-    // // should this be async?
+    // SHOW MORE DETAILS button
     else if (event.target.classList.contains('details-summary')) {
       handleMoreDetailsClick(event.target);
     }

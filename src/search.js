@@ -8,6 +8,7 @@ const searchBar = document.getElementById('search-bar');
 
 export let resultsArray = [];
 export let movieDetails = {};
+
 export async function searchMovies() {
 	const query = (searchBar.value).replaceAll(' ', '+');
 	const typeOfSearch = getSearchType();
@@ -19,7 +20,7 @@ export async function searchMovies() {
 		? await fetch.fetchExact(query)
 		: await fetch.fetchFuzzy(query);
 
-	// validate data
+	// validate data - for when title(s) not found in API
 	if (data.Response === "False") {
 		helpers.getSpaceSaver(data.Response);
 		return;
@@ -57,9 +58,10 @@ export async function handleMoreDetailsClick(eTarget) {
 	let detailsSummary = eTarget;
 	const imdbID = detailsSummary.attributes[1].value;
 
-	let data = await fetch.fetchDetails(detailsSummary, imdbID);
+	let data = await fetch.fetchFromImdbId(imdbID, detailsSummary);
 	if (data.Response === "False") {
 		console.error("Response was false.");
+		// TODO: add error message back in here in next commit. Return might have been messing things up.
 		return;
 	}
 
@@ -71,6 +73,7 @@ export async function handleLessDetailsClick(eTarget) {
 	const details = eTarget.closest('details');
 
 	if (details) {
+		// TODO: I'd moved this out of the details conditional in the stash... why?
 		const summary = details.querySelector('summary');
 		details.removeAttribute('open');
 		summary.style.display = 'unset';
