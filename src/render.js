@@ -1,3 +1,4 @@
+// CURRENT RENDER
 import { toggleMainSection, resetAll } from './helpers.js';
 import { watchlistArray } from './watchlist.js';
 import { resultsArray } from './search.js';
@@ -12,7 +13,7 @@ export function generateExactResultHtml(resultsArray) {
 
 	// note: removed imdb-id from article el but can't remember why so I may need to add it back in.
 	let html =
-	`<article class="movie-card">
+		`<article class="movie-card">
 		<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
 		<div class="movie-details">
 			<div class="title-watchlist">
@@ -68,7 +69,7 @@ export function generateWatchlistHtml() {
 		let html = ``;
 
 		watchlistArray.forEach(movie => {
-			let rating = generateRatingHtml(movie.rating)
+			let rating = generateRatingHtml(movie.rating);
 			html +=
 				`<article class="movie-card">
 					<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
@@ -152,7 +153,9 @@ export function generateMoreDetails(detailsSummary, movieDetails) {
 	generateRatingHtml(movieDetails.rating);
 }
 
-// TODO: I don't think I've moved any of the stash over here before this commitment.
+// TODO: Make operational for SEARCH ONLY. I Think the watch one should be a separate function.
 export function generateMoreDetailsError(detailsSummary) {
+	// targets div.details-div when in the fuzzy search list.
 	detailsSummary.nextElementSibling.innerHTML = '<p class="no-details-error">No further details were found.</p>';
+	detailsSummary.style.display = 'none';
 }

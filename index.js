@@ -42,11 +42,12 @@ document.addEventListener('click', (event) => {
     if (event.target.classList.contains('fa-solid')) {
       handleWatchlistIconClick(event.target.dataset.imdbId);
     }
-    // SHOW MORE DETAILS button
+    // MORE DETAILS
     else if (event.target.classList.contains('details-summary')) {
       handleMoreDetailsClick(event.target);
     }
   }
+  // LESS DETAILS
   else if (event.target.classList.contains('less-details')) {
     handleLessDetailsClick(event.target);
   }

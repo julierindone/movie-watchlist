@@ -13,6 +13,7 @@ export function resetAll() {
 export function getSpaceSaver(message = '') {
 	toggleMainSection('space-saver');
 
+	// Title not found in API
 	if (message === 'False') {
 		message = `I couldn't find that title.<br>Check your spelling and try again.`;
 	}
@@ -36,6 +37,7 @@ export function getSpaceSaver(message = '') {
 export function toggleMainSection(goal) {
 	const listTypes = ['fuzzy', 'exact', 'watchlist'];
 	if (goal === 'space-saver') {
+		main.classList.add('space-saver')
 		mainWrapper.classList.remove(['card-wrapper', ...listTypes]);
 	}
 	else {

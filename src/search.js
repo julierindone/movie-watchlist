@@ -2,7 +2,7 @@ import { createMovieObject } from './normalize.js';
 import * as fetch from './fetch.js';
 import * as helpers from './helpers.js';
 import { onWatchlist } from './watchlist.js';
-import { generateExactResultHtml, generateFuzzyResultsHtml, generateMoreDetails } from './render.js';
+import { generateExactResultHtml, generateFuzzyResultsHtml, generateMoreDetails, generateMoreDetailsError } from './render.js';
 
 const searchBar = document.getElementById('search-bar');
 
@@ -53,20 +53,21 @@ export function handleImageError(brokenImage) {
 	brokenImage.alt = 'film poster not found';
 }
 
+// TODO: add error message back in here in next commit. Return might have been messing things up.
 // TODO: Refactor to use details tag
 export async function handleMoreDetailsClick(eTarget) {
-	let detailsSummary = eTarget;
-	const imdbID = detailsSummary.attributes[1].value;
+	const imdbID = eTarget.attributes[1].value;
 
-	let data = await fetch.fetchFromImdbId(imdbID, detailsSummary);
+	let data = await fetch.fetchFromImdbId(imdbID, eTarget);
+	// if it can't find the imdbId (like if it doesn't exist)
 	if (data.Response === "False") {
+		let moreDetailsDiv = eTarget.parentElement.querySelector('details-div');
+		generateMoreDetailsError(eTarget);
 		console.error("Response was false.");
-		// TODO: add error message back in here in next commit. Return might have been messing things up.
-		return;
 	}
 
 	movieDetails = createMovieObject(data);
-	generateMoreDetails(detailsSummary, movieDetails);
+	generateMoreDetails(eTarget, movieDetails);
 }
 
 export async function handleLessDetailsClick(eTarget) {
