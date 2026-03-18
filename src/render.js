@@ -159,3 +159,13 @@ export function generateMoreDetailsError(detailsSummary) {
 	detailsSummary.nextElementSibling.innerHTML = '<p class="no-details-error">No further details were found.</p>';
 	detailsSummary.style.display = 'none';
 }
+
+// TODO: This function name is riduclous. Change it.
+export function generateAddDetailsToWatchlistItemError(detailsDiv, addedToList = true) {
+	let message = addedToList === "true"
+		? `<p class="no-details-error">This title has been added to your watchlist, but it is missing some details.</p>`
+		: `<p class="no-details-error">Something has gone wrong! This title has not been added to your watchlist.</p>`
+	detailsDiv.innerHTML = message;
+	detailsDiv.previousElementSibling.style.display = 'none';
+	detailsDiv.parentElement.setAttribute('open', '');
+}

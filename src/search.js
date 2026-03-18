@@ -23,6 +23,7 @@ export async function searchMovies() {
 	// validate data - for when title(s) not found in API
 	if (data.Response === "False") {
 		helpers.getSpaceSaver(data.Response);
+		console.error("Title not found.")
 		return;
 	}
 

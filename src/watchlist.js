@@ -1,5 +1,5 @@
 import { resultsArray } from "./search.js";
-import { renderHtml } from "./render.js";
+import { generateAddDetailsToWatchlistItemError, renderHtml } from "./render.js";
 import { createMovieObject } from "./normalize.js";
 import { fetchFromImdbId } from "./fetch.js";
 
@@ -42,19 +42,20 @@ export function initLocalStorageWatchlist() {
 	}
 }
 
-export async function handleWatchlistIconClick(clickedImdbID) {
-	let movie = getClickedMovie(clickedImdbID);
+export async function handleWatchlistIconClick(eTarget) {
+	let movie = getClickedMovie(eTarget.dataset.imdbId);
+	let detailsDiv = eTarget.closest('.movie-details').querySelector('.details-div');
 
 	// add or remove as needed
 	if (onWatchlist(movie.imdbID)) {
 		removeFromWatchlist(movie);
 	}
 	else {
-		// if full details not present, fetch to store in list
+		// if full details not present, fetch before adding movie to watchlist
 		if (!movie.genre) {
-			movie = await processWatchlistAdd(movie);
+			movie = await processWatchlistAdd(movie, detailsDiv);
 		}
-		addToWatchList(movie);
+		addToWatchList(movie, detailsDiv);
 	}
 
 	// set localStorage to match updated watchlist
@@ -77,7 +78,7 @@ function removeFromWatchlist(movie) {
 	watchlistArray.splice(watchlistIndex, 1);
 }
 
-function addToWatchList(movie) {
+function addToWatchList(movie, detailsDiv) {
 	// change watchlist status in object in resultsArray
 	if (document.getElementById('search-page')) {
 		let resultsIndex = getResultsIndex(movie.imdbID);
@@ -113,13 +114,15 @@ function getResultsIndex(movieImdbID) {
 	return resultsArray.findIndex(movie => movie.imdbID === movieImdbID);
 }
 
-async function processWatchlistAdd(movie) {
-	let data = await fetchFromImdbId(movie.imdbID);
+async function processWatchlistAdd(movie, detailsDiv) {
+	let data = await fetchFromImdbId(movie.imdbID, detailsDiv);
 
-	// process fetch datad
+	// check if data response failed
 	if (data.Response === "False") {
+		generateAddDetailsToWatchlistItemError(detailsDiv, data.Response);
 		console.error("Response was false.");
-		return;
 	}
-	return createMovieObject(data);
+	else {
+		return createMovieObject(data);
+	}
 }

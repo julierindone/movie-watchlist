@@ -40,7 +40,7 @@ document.addEventListener('click', (event) => {
   // ADD TO WATCHLIST
   else if (event.target.dataset.imdbId) {
     if (event.target.classList.contains('fa-solid')) {
-      handleWatchlistIconClick(event.target.dataset.imdbId);
+      handleWatchlistIconClick(event.target);
     }
     // MORE DETAILS
     else if (event.target.classList.contains('details-summary')) {
