@@ -6,9 +6,9 @@
 
 .card-wrapper {
   color: var(--white);
-  margin-inline: 0;
-  padding-inline: 4.3vw;
   text-align: left;
+  padding-inline: 4.3vw;
+  margin-inline: 0;
 
   & article:first-of-type {
     margin-top: 0.1em;
@@ -19,24 +19,23 @@
     border-color: var(--white);
     border-inline: none;
     border-bottom: none;
-    opacity: 50%;
-    width: 80%;
-  }
+    opacity: 0.25;
 
-  hr:last-of-type {
-    margin-bottom: 3em;
+    &:last-of-type {
+      display: none;
+    }
   }
 }
 
 /* TODO: convert to grid using media objects guidelines
-     https://developer.mozilla.org/en-US/docs/Web/CSS/How_to/Layout_cookbook/Media_objects */
+  https://developer.mozilla.org/en-US/docs/Web/CSS/How_to/Layout_cookbook/Media_objects */
 article.movie-card {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 0.95em;
   padding-block: 0.65rem;
-  margin-block: 1rem;
+  margin-block: 1.2rem;
 }
 
 div.movie-details {
@@ -50,6 +49,13 @@ div.movie-details {
     display: flex;
     justify-content: space-between;
     gap: 0.85em;
+    align-items: center;
+  }
+
+  & h2 {
+    font-size: clamp(1rem, 0.62rem + 1.5vw, 1.15rem);
+    font-weight: 500;
+    text-wrap: wrap;
   }
 
   & .runtime-year-genre-rating {
@@ -75,8 +81,8 @@ div.movie-details {
 
     > #rating {
       align-self: center;
-      font-size: 1.02em;
-      font-weight: 400;
+      font-size: 0.9em;
+      font-weight: 350;
     }
   }
 
@@ -86,6 +92,10 @@ div.movie-details {
     margin-top: 0.7em;
     font-size: 0.95em;
     line-height: 1.45;
+  }
+
+  & p.year {
+    margin-top: 0;
   }
 }
 
@@ -141,8 +151,7 @@ article.movie-card.fuzzy-results {
 
 .fa-circle-plus,
 .fa-circle-check {
-  font-size: 1.55em;
-  padding-top: 0.25em;
+  font-size: 1.45em;
 
   &:hover {
     transform: scale(1.12);
@@ -151,12 +160,12 @@ article.movie-card.fuzzy-results {
 
 .fuzzy-details .fa-circle-plus,
 .fuzzy-details .fa-circle-check {
-  font-size: 1.7em;
+  font-size: 1.6em;
 }
 
 .fa-circle-check {
-  color: var(--ice-blue);
-  padding-top: 0.28em;
+  color: var(--light-ice-blue);
+  /* padding-top: 0.28em; */
 }
 
 .fa-star {
@@ -170,10 +179,6 @@ article.movie-card.fuzzy-results {
 	============================== */
 
 @media (width > 580px) {
-  hr.card-divider {
-    width: 40%;
-  }
-
   article.movie-card {
     gap: 1.3em;
   }
