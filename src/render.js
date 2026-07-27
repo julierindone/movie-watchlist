@@ -2,10 +2,14 @@
 import { toggleMainSection, resetAll } from './helpers.js';
 import { watchlistArray } from './watchlist.js';
 import { resultsArray } from './search.js';
+import VanillaTilt from 'vanilla-tilt';
 
 const mainWrapper = document.getElementById('main-wrapper');
 
-// TODO: MOVE DOM stuff into separate function (maybe)
+function addTilt() {
+	VanillaTilt.init(document.querySelectorAll("[data-tilt]"));
+}
+
 export function generateExactResultHtml(resultsArray) {
 	let movie = resultsArray[0];
 	let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
@@ -14,7 +18,7 @@ export function generateExactResultHtml(resultsArray) {
 	// note: removed imdb-id from article el but can't remember why so I may need to add it back in.
 	let html =
 		`<article class="movie-card">
-		<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
+	<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}" data-tilt data-tilt-reverse="true" />
 		<div class="movie-details">
 			<div class="title-watchlist">
 				<h2>${movie.title}</h2>
@@ -35,6 +39,7 @@ export function generateExactResultHtml(resultsArray) {
 	toggleMainSection('card-wrapper');
 	mainWrapper.classList.add('exact');
 	mainWrapper.innerHTML = html;
+	addTilt();
 }
 
 export function generateFuzzyResultsHtml(resultsArray) {
@@ -43,7 +48,7 @@ export function generateFuzzyResultsHtml(resultsArray) {
 		let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
 		fuzzyCardsHTML +=
 			`<article class="movie-card fuzzy-results" data-imdb-id="${movie.imdbID}">
-				<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
+				<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}" data-tilt data-tilt-reverse="true" />
 				<div class="movie-details">
 					<div class="title-watchlist">
 						<h2>${movie.title}</h2>
@@ -62,6 +67,7 @@ export function generateFuzzyResultsHtml(resultsArray) {
 	toggleMainSection('card-wrapper');
 	mainWrapper.classList.add('fuzzy');
 	mainWrapper.innerHTML = fuzzyCardsHTML;
+	addTilt();
 }
 
 export function generateWatchlistHtml() {
@@ -72,7 +78,7 @@ export function generateWatchlistHtml() {
 			let rating = generateRatingHtml(movie.rating);
 			html +=
 				`<article class="movie-card">
-					<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}">
+					<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}" data-tilt data-tilt-reverse="true" />
 					<div class="movie-details">
 						<div class="title-watchlist">
 							<h2>${movie.title}</h2>
@@ -94,6 +100,7 @@ export function generateWatchlistHtml() {
 		toggleMainSection('card-wrapper');
 		mainWrapper.classList.add('watchlist');
 		mainWrapper.innerHTML = html;
+		addTilt();
 	}
 
 	else {
