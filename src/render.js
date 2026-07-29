@@ -1,10 +1,7 @@
-// CURRENT RENDER
 import { toggleMainSection, resetAll } from './helpers.js';
 import { watchlistArray } from './watchlist.js';
 import { resultsArray } from './search.js';
 import VanillaTilt from 'vanilla-tilt';
-
-const mainWrapper = document.getElementById('main-wrapper');
 
 function addTilt() {
 	VanillaTilt.init(document.querySelectorAll("[data-tilt]"));
@@ -18,7 +15,7 @@ export function generateExactResultHtml(resultsArray) {
 	// note: removed imdb-id from article el but can't remember why so I may need to add it back in.
 	let html =
 		`<article class="movie-card">
-	<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}" data-tilt data-tilt-reverse="true" />
+		<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}" data-tilt data-tilt-reverse="true" />
 		<div class="movie-details">
 			<div class="title-watchlist">
 				<h2>${movie.title}</h2>
@@ -33,12 +30,12 @@ export function generateExactResultHtml(resultsArray) {
 			</div>
 			<p class="plot">${movie.plot}</p>
 		</div>
-		</article>
-		<hr class="card-divider">`;
+	</article>
+	<hr class="card-divider">`;
 
 	toggleMainSection('card-wrapper');
-	mainWrapper.classList.add('exact');
-	mainWrapper.innerHTML = html;
+	document.getElementById('main-wrapper').classList.add('exact');
+	document.getElementById('main-wrapper').innerHTML = html;
 	addTilt();
 }
 
@@ -65,8 +62,8 @@ export function generateFuzzyResultsHtml(resultsArray) {
 	};
 
 	toggleMainSection('card-wrapper');
-	mainWrapper.classList.add('fuzzy');
-	mainWrapper.innerHTML = fuzzyCardsHTML;
+	document.getElementById('main-wrapper').classList.add('fuzzy');
+	document.getElementById('main-wrapper').innerHTML = fuzzyCardsHTML;
 	addTilt();
 }
 
@@ -98,8 +95,8 @@ export function generateWatchlistHtml() {
 		});
 
 		toggleMainSection('card-wrapper');
-		mainWrapper.classList.add('watchlist');
-		mainWrapper.innerHTML = html;
+		document.getElementById('main-wrapper').classList.add('watchlist');
+		document.getElementById('main-wrapper').innerHTML = html;
 		addTilt();
 	}
 
@@ -136,6 +133,7 @@ function generateRatingHtml(rating) {
 
 // render content based on type of list
 export function renderHtml() {
+	let mainWrapper = document.getElementById('main-wrapper');
 	mainWrapper.classList.contains('fuzzy') ? generateFuzzyResultsHtml(resultsArray)
 		: mainWrapper.classList.contains('exact') ? generateExactResultHtml(resultsArray)
 			: generateWatchlistHtml();

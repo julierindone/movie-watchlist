@@ -35,10 +35,11 @@ export function getSpaceSaver(message = '') {
 }
 
 export function toggleMainSection(goal) {
+	let mainWrapper = document.getElementById('main-wrapper');
 	const listTypes = ['fuzzy', 'exact', 'watchlist'];
 	if (goal === 'space-saver') {
 		main.classList.add('space-saver')
-		mainWrapper.classList.remove(['card-wrapper', ...listTypes]);
+		mainWrapper.classList.remove('card-wrapper', ...listTypes);
 	}
 	else {
 		main.classList.remove('space-saver');
