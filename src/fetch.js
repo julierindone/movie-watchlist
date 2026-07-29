@@ -8,7 +8,7 @@ export async function fetchExact(query) {
 		return response.json();
 	}
 	catch (error) {
-		getSpaceSaver();
+		getSpaceSaver('error');
 		console.error(error);
 	}
 }
@@ -20,7 +20,7 @@ export async function fetchFuzzy(query) {
 		return response.json();
 	}
 	catch (error) {
-		getSpaceSaver();
+		getSpaceSaver('error');
 		console.error(error);
 	}
 }

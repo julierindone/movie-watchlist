@@ -235,7 +235,7 @@ form {
 .space-saver {
   color: var(--light-gray);
   width: 90vw;
-  padding-bottom: 4.5vh;
+  padding-bottom: 6.5vh;
   justify-content: center;
 
   & p {

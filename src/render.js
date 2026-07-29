@@ -1,4 +1,4 @@
-import { toggleMainSection, resetAll } from './helpers.js';
+import { getSpaceSaver, toggleMainSection, resetAll } from './helpers.js';
 import { watchlistArray } from './watchlist.js';
 import { resultsArray } from './search.js';
 import VanillaTilt from 'vanilla-tilt';
@@ -102,6 +102,7 @@ export function generateWatchlistHtml() {
 
 	else {
 		resetAll();
+		getSpaceSaver('watchlist');
 	}
 }
 
@@ -169,7 +170,7 @@ export function generateMoreDetailsError(detailsSummary) {
 export function generateAddDetailsToWatchlistItemError(detailsDiv, addedToList = true) {
 	let message = addedToList === "true"
 		? `<p class="no-details-error">This title has been added to your watchlist, but it is missing some details.</p>`
-		: `<p class="no-details-error">Something has gone wrong! This title has not been added to your watchlist.</p>`
+		: `<p class="no-details-error">Something has gone wrong! This title has not been added to your watchlist.</p>`;
 	detailsDiv.innerHTML = message;
 	detailsDiv.previousElementSibling.style.display = 'none';
 	detailsDiv.parentElement.setAttribute('open', '');

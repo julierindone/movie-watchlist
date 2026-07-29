@@ -21,8 +21,8 @@ export async function searchMovies() {
 		: await fetch.fetchFuzzy(query);
 
 	// validate data - for when title(s) not found in API
-	if (data.Response === "False") {
-		helpers.getSpaceSaver(data.Response);
+	if (data.Response.toLowerCase() === "false") {
+		helpers.getSpaceSaver('no_matches');
 		console.error("Title not found.")
 		return;
 	}

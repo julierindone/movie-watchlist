@@ -1,33 +1,31 @@
 import { setCurrentResultIndex } from '../index.js';
-import { resultsArray } from './search.js'
-
-const main = document.getElementById('main');
-const mainWrapper = document.getElementById('main-wrapper');
+import { resultsArray } from './search.js';
 
 export function resetAll() {
 	resultsArray.length = 0;
 	setCurrentResultIndex();
-	mainWrapper.innerHTML = '';
+	document.getElementById('main-wrapper').innerHTML = '';
 }
 
-export function getSpaceSaver(message = '') {
+export function getSpaceSaver(status) {
+	let message;
+
 	toggleMainSection('space-saver');
 
-	// Title not found in API
-	if (message === 'False') {
-		message = `I couldn't find that title.<br>Check your spelling and try again.`;
-	}
-
-	else if (message === 'watchlist') {
+	// Empty watchlist
+	if (status === 'watchlist') {
 		message = `your watchlist is empty.</p>
 		<p>visit the <a href="index.html">search page</a> to find your favorites.`;
 	}
-
-	else if (message === '') {
+	// Title not found in API
+	else if (status === "no_matches") {
+		message = `I couldn't find that title.<br>Check your spelling and try again.`;
+	}
+	// what'a this for, and is it needed? i think maybe when connection broken...
+	else {
 		message = `Something went wrong!<br>Please try again.`;
 	}
-
-	main.innerHTML =
+	document.getElementById('main').innerHTML =
 		`<div id="main-wrapper">
 			<p>${message}</p>
 			<i class="fa-solid fa-film"></i>
