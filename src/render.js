@@ -33,7 +33,7 @@ export function generateExactResultHtml(resultsArray) {
 	</article>
 	<hr class="card-divider">`;
 
-	toggleMainSection('card-wrapper');
+	toggleMainSection();
 	document.getElementById('main-wrapper').classList.add('exact');
 	document.getElementById('main-wrapper').innerHTML = html;
 	addTilt();
@@ -61,7 +61,7 @@ export function generateFuzzyResultsHtml(resultsArray) {
 			<hr class="card-divider">`;
 	};
 
-	toggleMainSection('card-wrapper');
+	toggleMainSection();
 	document.getElementById('main-wrapper').classList.add('fuzzy');
 	document.getElementById('main-wrapper').innerHTML = fuzzyCardsHTML;
 	addTilt();
@@ -94,7 +94,7 @@ export function generateWatchlistHtml() {
 				<hr class="card-divider">`;
 		});
 
-		toggleMainSection('card-wrapper');
+		toggleMainSection();
 		document.getElementById('main-wrapper').classList.add('watchlist');
 		document.getElementById('main-wrapper').innerHTML = html;
 		addTilt();
@@ -133,6 +133,7 @@ function generateRatingHtml(rating) {
 }
 
 // render content based on type of list
+// TODO: Update to use typeOfSearch var once it's created.
 export function renderHtml() {
 	let mainWrapper = document.getElementById('main-wrapper');
 	mainWrapper.classList.contains('fuzzy') ? generateFuzzyResultsHtml(resultsArray)
