@@ -8,15 +8,16 @@ const searchBar = document.getElementById('search-bar');
 
 export let resultsArray = [];
 export let movieDetails = {};
+export let searchType = null;
+export function setSearchType(value) { searchType = value; }
 
 export async function searchMovies() {
 	const query = (searchBar.value).replaceAll(' ', '+');
-	const typeOfSearch = getSearchType();
-
+	setSearchType(getSearchType());
 	helpers.resetAll();
 
 	// fetch data
-	let data = typeOfSearch === "exact"
+	let data = searchType === "exact"
 		? await fetch.fetchExact(query)
 		: await fetch.fetchFuzzy(query);
 
@@ -28,13 +29,14 @@ export async function searchMovies() {
 	}
 
 	// reassign data to be stored in arrays
-	data = fetch.toMovieArray(typeOfSearch, data);
+	data = fetch.toMovieArray(searchType, data);
 
 	// create normalized array of movies
 	resultsArray = data.map(movie => createMovieObject(movie, onWatchlist(movie.imdbID)));
 
+	// TODO: Couldn't I be calling renderHTML from here?
 	// create html by type
-	typeOfSearch === "exact"
+	searchType === "exact"
 		? generateExactResultHtml(resultsArray)
 		: generateFuzzyResultsHtml(resultsArray);
 }
@@ -42,11 +44,15 @@ export async function searchMovies() {
 function getSearchType() {
 	const searchTypes = document.getElementsByName('search-type');
 
-	for (let type of searchTypes) {
-		if (type.checked) {
-			return type.dataset.searchType;
-		}
-	}
+	// Determine fuzzy search, exact search, or the watchlist page since var is also used to determine type of list.
+	let currentType = Array.from(searchTypes).filter(type => type.checked)[0];
+
+	let typeOfSearch = currentType.id.includes('exact')
+		? 'exact'
+		: currentType.id.includes('fuzzy')
+			? 'fuzzy'
+			: 'watchlist';
+	return typeOfSearch;
 }
 
 export function handleImageError(brokenImage) {

@@ -1,6 +1,6 @@
 import { getSpaceSaver, toggleMainSection, resetAll } from './helpers.js';
 import { watchlistArray } from './watchlist.js';
-import { resultsArray } from './search.js';
+import { resultsArray, searchType } from './search.js';
 import VanillaTilt from 'vanilla-tilt';
 
 function addTilt() {
@@ -34,16 +34,15 @@ export function generateExactResultHtml(resultsArray) {
 	<hr class="card-divider">`;
 
 	toggleMainSection();
-	document.getElementById('main-wrapper').classList.add('exact');
 	document.getElementById('main-wrapper').innerHTML = html;
 	addTilt();
 }
 
 export function generateFuzzyResultsHtml(resultsArray) {
-	let fuzzyCardsHTML = '';
+	let html = '';
 	for (let movie of resultsArray) {
 		let watchlistIcon = (movie.watchlist === true) ? "check" : "plus";
-		fuzzyCardsHTML +=
+		html +=
 			`<article class="movie-card fuzzy-results" data-imdb-id="${movie.imdbID}">
 				<img class="thumbnail" src="${movie.thumbnail}" alt="${movie.alt}" data-tilt data-tilt-reverse="true" />
 				<div class="movie-details">
@@ -62,8 +61,7 @@ export function generateFuzzyResultsHtml(resultsArray) {
 	};
 
 	toggleMainSection();
-	document.getElementById('main-wrapper').classList.add('fuzzy');
-	document.getElementById('main-wrapper').innerHTML = fuzzyCardsHTML;
+	document.getElementById('main-wrapper').innerHTML = html;
 	addTilt();
 }
 
@@ -95,7 +93,6 @@ export function generateWatchlistHtml() {
 		});
 
 		toggleMainSection();
-		document.getElementById('main-wrapper').classList.add('watchlist');
 		document.getElementById('main-wrapper').innerHTML = html;
 		addTilt();
 	}
@@ -133,11 +130,9 @@ function generateRatingHtml(rating) {
 }
 
 // render content based on type of list
-// TODO: Update to use typeOfSearch var once it's created.
 export function renderHtml() {
-	let mainWrapper = document.getElementById('main-wrapper');
-	mainWrapper.classList.contains('fuzzy') ? generateFuzzyResultsHtml(resultsArray)
-		: mainWrapper.classList.contains('exact') ? generateExactResultHtml(resultsArray)
+	searchType === 'exact' ? generateExactResultHtml(resultsArray)
+		: searchType === 'fuzzy' ? generateFuzzyResultsHtml(resultsArray)
 			: generateWatchlistHtml();
 }
 

@@ -43,6 +43,6 @@ export async function fetchFromImdbId(imdbID, errorMessageDiv) {
 	}
 }
 
-export function toMovieArray(typeOfSearch, data) {
-	return typeOfSearch === "exact" ? [data] : data.Search;
+export function toMovieArray(searchType, data) {
+	return searchType === "exact" ? [data] : data.Search;
 }

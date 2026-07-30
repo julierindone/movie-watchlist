@@ -34,15 +34,12 @@ export function getSpaceSaver(status) {
 
 export function toggleMainSection(goal = 'list') {
 	let mainWrapper = document.getElementById('main-wrapper');
-	// TODO: Eliminate list types - once switching to typeOfSearch, i don't think we need these classes at all. Might not even need this toggle function at all..
-	const listTypes = ['fuzzy', 'exact', 'watchlist'];
 	if (goal === 'space-saver') {
 		main.classList.add('space-saver');
-		mainWrapper.classList.remove('card-wrapper', ...listTypes);
+		mainWrapper.classList.remove('card-wrapper');
 	}
 	else {
 		main.classList.remove('space-saver');
 		mainWrapper.classList.add('card-wrapper');
-		mainWrapper.classList.remove(...listTypes);
 	}
 }
