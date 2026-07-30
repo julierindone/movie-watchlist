@@ -47,14 +47,13 @@ button {
 h1 {
   align-self: center;
   font-family: "Limelight", sans-serif;
-  font-size: clamp(1.5rem, 0.5rem + 8.5vw, 3.3rem);
+  font-size: clamp(1.4rem, 0.4rem + 9.9vw, 3.5rem);
   text-align: center;
   text-transform: uppercase;
   text-shadow: var(--black-text-shadow);
   letter-spacing: 0.07em;
   word-spacing: .06em;
   opacity: 0.85;
-  padding-top: 1.4vh;
 }
 
 p,
@@ -117,33 +116,29 @@ a:visited {
 
 header {
   background: url("../images/vista_lapl_coll.jpg") no-repeat top / cover;
-  height: max(150px, 19vh);
+  height: max(170px, 19vh);
   z-index: 0;
 
   > .header-text-wrapper {
     display: grid;
-    /* NOTE: The 60% is causing the form to get messed up on smallest phone sizes */
     grid-template-rows: auto 68px;
     border-bottom: var(--ice-blue-border);
     height: 100%;
     backdrop-filter: contrast(.65) blur(1px) brightness(.34);
     padding-inline: 0.8em;
-    padding-bottom: min(1.2vh, 1rem);
+    padding-block: min(1.5vh, 1rem);
+    align-content: center;
   }
 }
 
-#watchlist-page {
-  header {
-    height: max(100px, 13.5vh);
+#watchlist-page header {
+  > .header-text-wrapper {
+    grid-template-rows: unset;
+    padding-bottom: 0;
+  }
 
-    > .header-text-wrapper {
-      grid-template-rows: unset;
-      padding-bottom: 0;
-    }
-
-    > h1 {
-      letter-spacing: 0.09em;
-    }
+  > h1 {
+    letter-spacing: 0.09em;
   }
 }
 
@@ -153,8 +148,7 @@ form {
   flex-flow: column wrap;
   align-self: end;
   justify-self: center;
-  width: 100%;
-  padding-inline: 5vw;
+  width: min(97%, 395px);
 }
 
 #search-bar-wrapper {
@@ -165,7 +159,7 @@ form {
   border: var(--ice-blue-border);
   border-radius: 8px;
   padding-inline: 0.5rem 0.2rem;
-  padding-block: .0875em;
+  padding-block: .19em;
 
   &.fancy-focus {
     border: 2px solid var(--ice-blue);
@@ -265,6 +259,12 @@ form {
   font-size: 1rem;
 }
 
+i:hover,
+div.type-choice:hover,
+div.type-choice > *:hover {
+  cursor: pointer;
+}
+
 /* =============================
 		MEDIA QUERIES
 	============================== */
@@ -275,39 +275,37 @@ form {
   }
 
   header {
-    height: max(180px, 16vh);
+    height: max(160px, 16vh);
 
     > .header-text-wrapper {
       grid-template-rows: auto 38px;
-      padding-bottom: 1.5vh;
+      padding-bottom: 1.8vh;
 
       > h1 {
-        font-size: clamp(3.3rem, 8.4vw, 4.6rem);
+        font-size: clamp(3.5rem, -.2rem + 10.4vw, 4.5rem);
+        /* padding-top: 0.4vh; */
       }
     }
-  }
-
-  body#watchlist header {
-    flex-basis: 12.5rem;
   }
 
   form {
     flex: unset;
     flex-direction: row;
-    padding-inline: 1vw;
     /* TODO: set width with a container query. */
-    width: min(780px, 94%);
+    /* width: min(730px, 85%); */
+    width: min(700px, 85%);
+    padding-bottom: unset;
 
     > #search-bar-wrapper {
-      flex: 10 1 150px;
-      opacity: 0.75;
-      padding-block: 0.135em;
+      flex: 8 1 150px;
+      opacity: 0.8;
+      padding-block: 0.35em;
     }
 
     #search-types {
       justify-content: end;
       flex-wrap: nowrap;
-      flex: 1 1 220px;
+      flex: 1 1 205px;
     }
   }
 

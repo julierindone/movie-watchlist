@@ -1,3 +1,7 @@
+// TODO: Fix!
+// watchlist.js:117-128 — processWatchlistAdd has no return in its if (data.Response === "False") branch, so it implicitly returns undefined. If an OMDb detail lookup ever fails, movie becomes undefined and the next line (addToWatchList(movie, ...)) throws.
+// watchlist.js: 126 — createMovieObject(data) is called without the watchlistStatus second argument(unlike every other call site), leaving movie.watchlist briefly undefined before it's overwritten.;
+
 import { resultsArray } from "./search.js";
 import { generateAddDetailsToWatchlistItemError, renderHtml } from "./render.js";
 import { createMovieObject } from "./normalize.js";

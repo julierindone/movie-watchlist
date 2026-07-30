@@ -35,7 +35,7 @@ article.movie-card {
   align-items: flex-start;
   gap: 0.95em;
   padding-block: 0.65rem;
-  margin-block: 1.2rem;
+  margin-block: 0.9rem;
 }
 
 div.movie-details {
@@ -58,6 +58,10 @@ div.movie-details {
     text-wrap: wrap;
   }
 
+  p {
+    letter-spacing: normal;
+  }
+
   & .runtime-year-genre-rating {
     display: flex;
     gap: 0.05em;
@@ -66,7 +70,7 @@ div.movie-details {
 
     > .runtime-year-genre {
       display: flex;
-      gap: 0.14em;
+      gap: 0.1em;
       flex-direction: column;
       flex: 1 1;
 
@@ -89,9 +93,9 @@ div.movie-details {
   & p.plot,
   & p.year {
     flex: 4 1;
-    margin-top: 0.7em;
-    font-size: 0.95em;
-    line-height: 1.45;
+    margin-top: 0.55em;
+    font-size: 0.93em;
+    line-height: 1.475;
   }
 
   & p.year {
@@ -105,9 +109,11 @@ div.movie-details {
   > .details-summary,
   .less-details {
     list-style: none;
-    font-size: 0.95em;
-    color: var(--ice-blue-links);
-    margin-top: 0.2em;
+    font-size: 0.9em;
+    font-style: italic;
+    font-weight: 200;
+    color: var(--light-ice-blue);
+    margin-top: 0.25em;
 
     &:hover {
       font-style: italic;
