@@ -4,7 +4,7 @@ import { generateAddDetailsToWatchlistItemError, generateMoreDetailsError } from
 const apiKey = import.meta.env.VITE_OMDB_API_KEY;
 
 export async function fetchExact(query) {
-	let url = `https://omdbapi.com/?t=${query}&apikey=apiKey`;
+	let url = `https://omdbapi.com/?t=${query}&apikey=${apiKey}`;
 	try {
 		const response = await fetch(url);
 		return response.json();
@@ -16,7 +16,7 @@ export async function fetchExact(query) {
 }
 
 export async function fetchFuzzy(query) {
-	let url = `https://omdbapi.com/?s=${query}&apikey=apiKey`;
+	let url = `https://omdbapi.com/?s=${query}&apikey=${apiKey}`;
 	try {
 		const response = await fetch(url);
 		return response.json();
@@ -28,7 +28,7 @@ export async function fetchFuzzy(query) {
 }
 
 export async function fetchFromImdbId(imdbID, errorMessageDiv) {
-	let url = `https://omdbapi.com/?i=${imdbID}&apikey=apiKey`;
+	let url = `https://omdbapi.com/?i=${imdbID}&apikey=${apiKey}`;
 
 	try {
 		const response = await fetch(url);
