@@ -60,21 +60,21 @@ export function handleImageError(brokenImage) {
 	brokenImage.alt = 'film poster not found';
 }
 
-// TODO: add error message back in here in next commit. Return might have been messing things up.
 // TODO: Refactor to use details tag
 export async function handleMoreDetailsClick(eTarget) {
 	const imdbID = eTarget.attributes[1].value;
 
+	try {
 	let data = await fetch.fetchFromImdbId(imdbID, eTarget);
-	// if it can't find the imdbId (like if it doesn't exist)
-	if (data.Response === "False") {
-		let moreDetailsDiv = eTarget.parentElement.querySelector('details-div');
-		generateMoreDetailsError(eTarget);
-		console.error("Response was false.");
-	}
 
 	movieDetails = createMovieObject(data);
 	generateMoreDetails(eTarget, movieDetails);
+	}
+
+	catch {
+		generateMoreDetailsError(eTarget);
+		return null;
+	}
 }
 
 export async function handleLessDetailsClick(eTarget) {

@@ -1,12 +1,14 @@
-// TODO: Fix!
-// watchlist.js:117-128 — processWatchlistAdd has no return in its if (data.Response === "False") branch, so it implicitly returns undefined. If an OMDb detail lookup ever fails, movie becomes undefined and the next line (addToWatchList(movie, ...)) throws.
-// watchlist.js: 126 — createMovieObject(data) is called without the watchlistStatus second argument(unlike every other call site), leaving movie.watchlist briefly undefined before it's overwritten.;
+// watchlist.js - ORIGINAL
+
+// TODO: FIXED 9/12 watchlist.js:117-128 — processWatchlistAdd has no return in its if (data.Response === "False") branch, so it implicitly returns undefined. If an OMDb detail lookup ever fails, movie becomes undefined and the next line (addToWatchList(movie, ...)) throws.
+
+// TODO: watchlist.js: 126 — createMovieObject(data) is called without the watchlistStatus second argument(unlike every other call site), leaving movie.watchlist briefly undefined before it's overwritten.;
 
 import { resultsArray } from "./search.js";
 import { generateAddDetailsToWatchlistItemError, renderHtml } from "./render.js";
 import { createMovieObject } from "./normalize.js";
 import { fetchFromImdbId } from "./fetch.js";
-
+import { getSpaceSaver } from "./helpers.js";
 export let watchlistArray = [];
 
 // get list from localStorage
@@ -119,14 +121,16 @@ function getResultsIndex(movieImdbID) {
 }
 
 async function processWatchlistAdd(movie, detailsDiv) {
+	try {
 	let data = await fetchFromImdbId(movie.imdbID, detailsDiv);
-
-	// check if data response failed
-	if (data.Response === "False") {
-		generateAddDetailsToWatchlistItemError(detailsDiv, data.Response);
-		console.error("Response was false.");
-	}
-	else {
 		return createMovieObject(data);
+	}
+
+	catch {
+		// Adds message to let user know movie was added, but no details.
+		generateAddDetailsToWatchlistItemError(detailsDiv);
+
+		// Add movie to watchlist anyway - better to have movie on watchlist without details than to lose it.
+		return movie;
 	}
 }
