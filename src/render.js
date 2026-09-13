@@ -81,12 +81,12 @@ export function generateWatchlistHtml() {
 						</div>
 						<div class="runtime-year-genre-rating">
 							<div class="runtime-year-genre">
-								<p>${movie.year}&emsp;${movie.runtime}</p>
-								<p class="genre">${movie.genre}</p>
+								<p>${convertNulls(movie.year)}&emsp;${convertNulls(movie.runtime)}</p>
+								<p class="genre">${convertNulls(movie.genre)}</p>
 							</div>
 							${rating}
 						</div>
-						<p class="plot">${movie.plot}</p>
+						<p class="plot">${convertNulls(movie.plot)}</p>
 					</div>
 				</article>
 				<hr class="card-divider">`;
@@ -149,12 +149,17 @@ export function generateMoreDetailsError(detailsSummary) {
 	detailsSummary.style.display = 'none';
 }
 
-// TODO: This function name is riduclous. Change it.
-export function generateAddDetailsToWatchlistItemError(detailsDiv, addedToList = true) {
+// TODO: This function name is ridiculous. Change it.
+// TODO: Currently only "true" is used; if the false option isn't added back in, delete conditional.
+export function generateAddDetailsToWatchlistItemError(detailsDiv, addedToList = "true") {
 	let message = addedToList === "true"
 		? `<p class="no-details-error">This title has been added to your watchlist, but it is missing some details.</p>`
 		: `<p class="no-details-error">Something has gone wrong! This title has not been added to your watchlist.</p>`;
 	detailsDiv.innerHTML = message;
 	detailsDiv.previousElementSibling.style.display = 'none';
 	detailsDiv.parentElement.setAttribute('open', '');
+}
+
+function convertNulls(value) {
+	return (value === null || value === 'N/A' ? '' : value);
 }
