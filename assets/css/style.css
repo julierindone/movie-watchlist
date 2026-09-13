@@ -259,9 +259,13 @@ form {
   font-size: 1rem;
 }
 
-i:hover,
-div.type-choice:hover,
-div.type-choice > *:hover {
+i.fa-circle-plus,
+i.fa-circle-check,
+div.type-choice,
+div.type-choice > *,
+summary,
+button,
+a {
   cursor: pointer;
 }
 
