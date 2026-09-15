@@ -24,7 +24,7 @@ export async function searchMovies() {
 	// validate data - for when title(s) not found in API
 	if (data.Response.toLowerCase() === "false") {
 		helpers.getSpaceSaver('no_matches');
-		console.error("Title not found.")
+		console.error("Title not found.");
 		return;
 	}
 
@@ -62,13 +62,20 @@ export function handleImageError(brokenImage) {
 
 // TODO: Refactor to use details tag
 export async function handleMoreDetailsClick(eTarget) {
-	const imdbID = eTarget.attributes[1].value;
+	const imdbID = eTarget.dataset.imdbId;
 
 	try {
-	let data = await fetch.fetchFromImdbId(imdbID, eTarget);
+		let data = await fetch.fetchFromImdbId(imdbID);
 
-	movieDetails = createMovieObject(data);
-	generateMoreDetails(eTarget, movieDetails);
+		if (data.Response === "False") {
+			// successfully fetched JSON body that just means "no match."
+			console.log(`handleMoreDetailsClick: should mean the url was wrong.`);
+			generateMoreDetailsError(eTarget);
+			return null;
+		}
+
+		movieDetails = createMovieObject(data);
+		generateMoreDetails(eTarget, movieDetails);
 	}
 
 	catch {

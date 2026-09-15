@@ -122,15 +122,22 @@ function getResultsIndex(movieImdbID) {
 
 async function processWatchlistAdd(movie, detailsDiv) {
 	try {
-	let data = await fetchFromImdbId(movie.imdbID, detailsDiv);
-		return createMovieObject(data);
+		let data = await fetchFromImdbId(movie.imdbID);
+		let response = data.Response
+		if (data.Response === "False") {
+			addDetailsToWatchlistItemError(detailsDiv, response);
+			// TODO: Needs new message
+			// still add the movie to the watchlist sans details
+			return movie;
+		}
+		else {
+			return createMovieObject(data, true);
+		}
 	}
 
 	catch {
-		// Adds message to let user know movie was added, but no details.
-		generateAddDetailsToWatchlistItemError(detailsDiv);
-
-		// Add movie to watchlist anyway - better to have movie on watchlist without details than to lose it.
-		return movie;
+		// Network down. movie not added (Could add anyway in localstorage, but not a db).
+		addDetailsToWatchlistItemError(detailsDiv);
+		return null;
 	}
 }

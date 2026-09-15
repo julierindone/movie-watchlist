@@ -149,10 +149,8 @@ export function generateMoreDetailsError(detailsSummary) {
 	detailsSummary.style.display = 'none';
 }
 
-// TODO: This function name is ridiculous. Change it.
-// TODO: Currently only "true" is used; if the false option isn't added back in, delete conditional.
-export function generateAddDetailsToWatchlistItemError(detailsDiv, addedToList = "true") {
-	let message = addedToList === "true"
+export function addDetailsToWatchlistItemError(detailsDiv, response = "True") {
+	let message = response === "False"
 		? `<p class="no-details-error">This title has been added to your watchlist, but it is missing some details.</p>`
 		: `<p class="no-details-error">Something has gone wrong! This title has not been added to your watchlist.</p>`;
 	detailsDiv.innerHTML = message;
