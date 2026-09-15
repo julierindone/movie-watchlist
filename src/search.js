@@ -60,7 +60,7 @@ export function handleImageError(brokenImage) {
 	brokenImage.alt = 'film poster not found';
 }
 
-// TODO: Refactor to use details tag
+// TODO: Refactor to use details tag (HUH???)
 export async function handleMoreDetailsClick(eTarget) {
 	const imdbID = eTarget.dataset.imdbId;
 
@@ -68,8 +68,6 @@ export async function handleMoreDetailsClick(eTarget) {
 		let data = await fetch.fetchFromImdbId(imdbID);
 
 		if (data.Response === "False") {
-			// successfully fetched JSON body that just means "no match."
-			console.log(`handleMoreDetailsClick: should mean the url was wrong.`);
 			generateMoreDetailsError(eTarget);
 			return null;
 		}

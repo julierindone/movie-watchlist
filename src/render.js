@@ -149,8 +149,8 @@ export function generateMoreDetailsError(detailsSummary) {
 	detailsSummary.style.display = 'none';
 }
 
-export function addDetailsToWatchlistItemError(detailsDiv, response = "True") {
-	let message = response === "False"
+export function addDetailsToWatchlistItemError(detailsDiv, addedToWatchlist) {
+	let message = addedToWatchlist
 		? `<p class="no-details-error">This title has been added to your watchlist, but it is missing some details.</p>`
 		: `<p class="no-details-error">Something has gone wrong! This title has not been added to your watchlist.</p>`;
 	detailsDiv.innerHTML = message;

@@ -1,11 +1,14 @@
 // watchlist.js - ORIGINAL
 
-// TODO: FIXED 9/12 watchlist.js:117-128 — processWatchlistAdd has no return in its if (data.Response === "False") branch, so it implicitly returns undefined. If an OMDb detail lookup ever fails, movie becomes undefined and the next line (addToWatchList(movie, ...)) throws.
+/*
+	FIX: processWatchlistAdd - error message getting clobbered by renderHTML
+	Make the missing-details state part of the data, not a one-off DOM write.Right now addDetailsToWatchlistItemError pokes.innerHTML directly, which only survives until the next render.Instead, store something like movie.detailsError = true(or movie.genre staying falsy is already a signal — you may not even need a new field) on the movie object when processWatchlistAdd gets Response: "False", then have generateWatchlistHtml / generateFuzzyResultsHtml check that flag and render the appropriate message into.details-div as part of normal template generation — same way it already handles convertNulls.
 
-// TODO: watchlist.js: 126 — createMovieObject(data) is called without the watchlistStatus second argument(unlike every other call site), leaving movie.watchlist briefly undefined before it's overwritten.;
+	That way renderHtml becomes the single source of truth for what's on screen, the error message survives every re-render for free, and addDetailsToWatchlistItemError as a separate DOM-mutation function can go away entirely (its logic moves into the generate functions).
+*/
 
 import { resultsArray } from "./search.js";
-import { generateAddDetailsToWatchlistItemError, renderHtml } from "./render.js";
+import { addDetailsToWatchlistItemError, renderHtml } from "./render.js";
 import { createMovieObject } from "./normalize.js";
 import { fetchFromImdbId } from "./fetch.js";
 import { getSpaceSaver } from "./helpers.js";
@@ -42,7 +45,7 @@ export function initLocalStorageWatchlist() {
 
 	// if there's a parsing error, completely reset it.
 	catch (error) {
-		console.log(`Corrupted JSON. Resetting.`);
+		console.log(`Corrupted JSON. Resetting. Error: ${error}`);
 		watchlistArray = [];
 		resetLocalStorageWatchlist();
 	}
@@ -50,6 +53,10 @@ export function initLocalStorageWatchlist() {
 
 export async function handleWatchlistIconClick(eTarget) {
 	let movie = getClickedMovie(eTarget.dataset.imdbId);
+	if (movie == null) {
+		getSpaceSaver('error');
+		return null;
+	}
 	let detailsDiv = eTarget.closest('.movie-details').querySelector('.details-div');
 
 	// add or remove as needed
@@ -61,12 +68,15 @@ export async function handleWatchlistIconClick(eTarget) {
 		if (!movie.genre) {
 			movie = await processWatchlistAdd(movie, detailsDiv);
 		}
-		addToWatchList(movie, detailsDiv);
+		if (movie != null) {
+			addToWatchList(movie, detailsDiv);
+		}
 	}
 
 	// set localStorage to match updated watchlist
 	setLocalStorageWatchlist();
 
+	// FIX LATER: this is clobbering the error messages.
 	// render content based on type of list
 	renderHtml(resultsArray, watchlistArray);
 }
@@ -123,20 +133,19 @@ function getResultsIndex(movieImdbID) {
 async function processWatchlistAdd(movie, detailsDiv) {
 	try {
 		let data = await fetchFromImdbId(movie.imdbID);
-		let response = data.Response
-		if (data.Response === "False") {
-			addDetailsToWatchlistItemError(detailsDiv, response);
-			// TODO: Needs new message
-			// still add the movie to the watchlist sans details
+		let response = data.Response;
+		if (response === "False") {
+			// OMdb-level failure. Ex: invalid ImdbID
+			addDetailsToWatchlistItemError(detailsDiv, true);
+			// Still adds the movie to the watchlist sans details, so it just returns the original movie object.
 			return movie;
 		}
 		else {
 			return createMovieObject(data, true);
 		}
 	}
-
 	catch {
-		// Network down. movie not added (Could add anyway in localstorage, but not a db).
+		// Movie not added (Could add anyway in localstorage, but not a db). Ex: Network down or invalid API key.
 		addDetailsToWatchlistItemError(detailsDiv);
 		return null;
 	}
