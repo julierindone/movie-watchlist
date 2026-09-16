@@ -35,6 +35,7 @@ document.addEventListener('click', (event) => {
   // ADD TO WATCHLIST
   else if (event.target.dataset.imdbId) {
     if (event.target.classList.contains('fa-solid')) {
+      // TODO: IDing these icons more specifically since I'll likely be adding more icons.
       handleWatchlistIconClick(event.target);
     }
     // MORE DETAILS

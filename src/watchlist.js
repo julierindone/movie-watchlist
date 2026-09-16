@@ -94,6 +94,7 @@ function removeFromWatchlist(movie) {
 	watchlistArray.splice(watchlistIndex, 1);
 }
 
+// TODO: pretty sure detailsDiv wasn't needed.... try removing.
 function addToWatchList(movie, detailsDiv) {
 	// change watchlist status in object in resultsArray
 	if (document.getElementById('search-page')) {
