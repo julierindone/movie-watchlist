@@ -9,38 +9,53 @@ const searchBar = document.getElementById('search-bar');
 export let resultsArray = [];
 export let movieDetails = {};
 export let searchType = null;
+
+// Setter for the module-level searchType, so other modules can update which
+// search mode (exact/fuzzy/watchlist) is currently active without reaching
+// in and mutating the exported binding directly.
 export function setSearchType(value) { searchType = value; }
 
+// Entry point for a search: reads the query from the search bar, determines
+// which search mode is active, fetches results from the API, normalizes them
+// into movie objects, and hands them off to be rendered as HTML.
 export async function searchMovies() {
 	const query = (searchBar.value).replaceAll(' ', '+');
 	setSearchType(getSearchType());
 	helpers.resetAll();
 
-	// fetch data
-	let data = searchType === "exact"
-		? await fetch.fetchExact(query)
-		: await fetch.fetchFuzzy(query);
+	try {
+		// fetch data
+		let data = searchType === "exact"
+			? await fetch.fetchExact(query)
+			: await fetch.fetchFuzzy(query);
 
-	// validate data - for when title(s) not found in API
-	if (data.Response.toLowerCase() === "false") {
-		helpers.getSpaceSaver('no_matches');
-		console.error("Title not found.");
-		return;
+		// validate data - for when title(s) not found in API
+		if (data.Response.toLowerCase() === "false") {
+			helpers.getSpaceSaver('no_matches');
+			console.error("Title not found.");
+			return null;
+		}
+
+		// reassign data to be stored in arrays
+		data = fetch.toMovieArray(searchType, data);
+
+		// create normalized array of movies
+		resultsArray = data.map(movie => createMovieObject(movie, onWatchlist(movie.imdbID)));
+
+		// create html by type
+		searchType === "exact"
+			? generateExactResultHtml(resultsArray)
+			: generateFuzzyResultsHtml(resultsArray);
 	}
-
-	// reassign data to be stored in arrays
-	data = fetch.toMovieArray(searchType, data);
-
-	// create normalized array of movies
-	resultsArray = data.map(movie => createMovieObject(movie, onWatchlist(movie.imdbID)));
-
-	// TODO: Couldn't I be calling renderHTML from here?
-	// create html by type
-	searchType === "exact"
-		? generateExactResultHtml(resultsArray)
-		: generateFuzzyResultsHtml(resultsArray);
+	catch {
+		helpers.getSpaceSaver('error');
+		return null;
+	}
 }
 
+// Inspects the checked radio button among the 'search-type' inputs to figure
+// out which mode the UI is currently set to. Doubles as the source of truth
+// for the watchlist view.
 function getSearchType() {
 	const searchTypes = document.getElementsByName('search-type');
 
@@ -55,12 +70,16 @@ function getSearchType() {
 	return typeOfSearch;
 }
 
+// Fallback handler wired to a poster <img>'s onerror event: swaps in a
+// placeholder icon and alt text whenever a movie's poster fails to load.
 export function handleImageError(brokenImage) {
 	brokenImage.src = './assets/images/film_icon.png';
 	brokenImage.alt = 'film poster not found';
 }
 
-// TODO: Refactor to use details tag (HUH???)
+// Click handler for a result's "more details" control: looks up the full
+// movie record by IMDb ID and renders an expanded details view for it.
+// TODO: Refactor to use details tag (HUH? Can't remember what I meant by this)
 export async function handleMoreDetailsClick(eTarget) {
 	const imdbID = eTarget.dataset.imdbId;
 
@@ -82,6 +101,8 @@ export async function handleMoreDetailsClick(eTarget) {
 	}
 }
 
+// Click handler for a result's "less details" control: collapses the
+// expanded <details> section for that movie back to its closed state.
 export async function handleLessDetailsClick(eTarget) {
 	const details = eTarget.closest('details');
 
